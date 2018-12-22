@@ -1,4 +1,4 @@
-package com.msjf.finance.cas.common.response;
+package com.msjf.finance.mcs.common.response;
 
 /**
  * Created by 11509 on 2018/12/19.

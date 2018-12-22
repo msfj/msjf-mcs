@@ -1,5 +1,5 @@
-package com.msjf.finance.cas.modules.organ.entity;
-import com.msjf.finance.cas.common.response.BaseEntity;
+package com.msjf.finance.mcs.modules.organ.entity;
+import com.msjf.finance.mcs.common.response.BaseEntity;
 
 /**
  * Created by 11509 on 2018/12/18.

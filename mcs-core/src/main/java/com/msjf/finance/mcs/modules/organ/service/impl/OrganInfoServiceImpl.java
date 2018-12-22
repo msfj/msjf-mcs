@@ -1,9 +1,9 @@
-package com.msjf.finance.cas.modules.organ.service.impl;
+package com.msjf.finance.mcs.modules.organ.service.impl;
 
-import com.msjf.finance.cas.facade.organ.domain.OrganInfoDomain;
-import com.msjf.finance.cas.modules.organ.dao.OrganInfoDao;
-import com.msjf.finance.cas.modules.organ.entity.OrganInfoEntity;
-import com.msjf.finance.cas.modules.organ.service.OrganInfoService;
+import com.msjf.finance.mcs.facade.organ.domain.OrganInfoDomain;
+import com.msjf.finance.mcs.modules.organ.dao.OrganInfoDao;
+import com.msjf.finance.mcs.modules.organ.entity.OrganInfoEntity;
+import com.msjf.finance.mcs.modules.organ.service.OrganInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;

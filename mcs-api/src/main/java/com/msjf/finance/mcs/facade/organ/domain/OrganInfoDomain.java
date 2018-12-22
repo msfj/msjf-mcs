@@ -1,6 +1,6 @@
-package com.msjf.finance.cas.facade.organ.domain;
+package com.msjf.finance.mcs.facade.organ.domain;
 
-import com.msjf.finance.cas.common.response.BaseDomain;
+import com.msjf.finance.mcs.common.response.BaseDomain;
 
 /**
  * Created by 11509 on 2018/12/18.

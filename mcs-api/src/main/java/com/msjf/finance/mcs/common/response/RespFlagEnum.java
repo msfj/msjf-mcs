@@ -1,4 +1,4 @@
-package com.msjf.finance.cas.common.response;
+package com.msjf.finance.mcs.common.response;
 
 public enum RespFlagEnum {
     SUCCESS("S", "成功"),

@@ -1,4 +1,4 @@
-package com.msjf.finance.cas.common.response;
+package com.msjf.finance.mcs.common.response;
 
 import com.alibaba.fastjson.JSON;
 
