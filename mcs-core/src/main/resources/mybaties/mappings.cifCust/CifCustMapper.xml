@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="GBK" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.msjf.finance.mcs.modules.organ.dao.OrganInfoDao">
+<mapper namespace="com.msjf.finance.mcs.modules.organ.dao.CifCustDao">
 
-    <resultMap id="BaseResultMap" type="com.msjf.finance.mcs.modules.organ.entity.OrganInfoEntity" >
+    <resultMap id="BaseResultMap" type="com.msjf.finance.mcs.modules.organ.entity.CifCustEntity" >
         <result column="customerno" property="customerno" jdbcType="VARCHAR" />
-        <result column="membername" property="membername" jdbcType="VARCHAR" />
-        <result column="organtype" property="organtype" jdbcType="VARCHAR" />
+        <result column="loginname" property="loginname" jdbcType="VARCHAR" />
+        <result column="menbertype" property="menbertype" jdbcType="VARCHAR" />
     </resultMap>
-    <sql id="Base_Column_List" >customerno,membername,organtype</sql>
-    <select id="queryOrganInfoList"  resultMap="BaseResultMap">
+    <sql id="Base_Column_List" >customerno,loginname,menbertype</sql>
+    <select id="queryCifCustList"  resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM cif_organ_info limit 1
+        FROM cif_cust limit 1
     </select>
 </mapper>

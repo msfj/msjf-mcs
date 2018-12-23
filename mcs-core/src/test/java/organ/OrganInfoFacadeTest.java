@@ -1,7 +1,7 @@
 package organ;
 
 import com.msjf.finance.mcs.common.test.SpringTestCase;
-import com.msjf.finance.mcs.facade.organ.OrganInfoFacade;
+import com.msjf.finance.mcs.facade.organ.CifCustFacade;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -11,14 +11,15 @@ import javax.annotation.Resource;
  */
 
 public class OrganInfoFacadeTest   extends SpringTestCase{
+//    @Resource
+//    CustInfoFacade custInfoFacade;
     @Resource
-    OrganInfoFacade organInfoFacade;
-
+    CifCustFacade cifCustFacade;
     @Test
     public  void  queryOrganInfoList(){
-        System.out.println("--------------------------"+organInfoFacade.queryOrganInfoList());
-        while (true){
-
-        }
+        System.out.println("--------------------------"+cifCustFacade.queryCifCustList());
+//        while (true){
+//
+//        }
     }
 }
