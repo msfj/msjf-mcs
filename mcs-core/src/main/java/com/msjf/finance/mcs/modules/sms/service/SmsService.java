@@ -23,7 +23,7 @@ import java.util.*;
 @Service("SmsServiceApi")
 public class SmsService {
     @Resource
-    cifCustDao;
+    CifCustDao cifCustDao;
     /**
      * 模板ID
      */
