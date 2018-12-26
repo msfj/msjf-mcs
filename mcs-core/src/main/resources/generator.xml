@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- 数据库驱动包位置 -->
+    <classPathEntry location="C:\Users\Administrator\.m2\repository\mysql\mysql-connector-java\5.1.38\mysql-connector-java-5.1.38.jar" />
+    <!--&lt;!&ndash; <classPathEntry location="C:\oracle\product\10.2.0\db_1\jdbc\lib\ojdbc14.jar" />&ndash;&gt;-->
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+        <!-- 数据库链接URL、用户名、密码 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://43.254.2.245:9190/mcs" userId="mcs" password="Nbsm741!+?">
+            <!--<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver" connectionURL="jdbc:oracle:thin:@localhost:1521:orcl" userId="msa" password="msa">-->
+        </jdbcConnection>
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+        <!-- 生成实体类的包名和位置，这里配置将生成的实体类放在cn.chejinbao.ecommerce.entity这个包下 -->
+        <javaModelGenerator targetPackage="com.msjf.finance.mcs.modules.sms.entity" targetProject="D:\project\msjf-mcs\mcs-core\src\main\java\">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+        <!-- 生成的SQL映射文件包名和位置，这里配置将生成的SQL映射文件放在cn.chejinbao.ecommerce.mapping这个包下 -->
+        <sqlMapGenerator targetPackage="mybaties.mappings.sms" targetProject="D:\project\msjf-mcs\mcs-core\src\main\java\">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+        <!-- 生成DAO的包名和位置，这里配置将生成的dao类放在cn.chejinbao.ecommerce.dao这个包下 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.msjf.finance.mcs.modules.sms.dao" targetProject="D:\project\msjf-mcs\mcs-core\src\main\java\">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+        <!-- 要生成那些表(更改tableName和domainObjectName就可以) -->
+        <table tableName="sys_sms_config" domainObjectName="SysSmsConfig" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="spm_message" domainObjectName="SpmMessage" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="spm_msg_template" domainObjectName="SpmMsgTemplate" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="spm_sms_control_tb" domainObjectName="SpmSmsControlTb" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="sys_params_config" domainObjectName="SysParamsConfig" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="aus_mobile_failcnt" domainObjectName="AusMobileFailcnt" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="aus_verificate_code" domainObjectName="AusVerificateCode" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+        <table tableName="cif_invite_code" domainObjectName="CifInviteCode" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+
+    </context>
+</generatorConfiguration>

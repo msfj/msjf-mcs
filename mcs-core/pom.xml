@@ -14,20 +14,99 @@
 
     <properties>
         <mapper_version>3.4.6</mapper_version>
-
+        <XmlSchema.version>1.4.7</XmlSchema.version>
+        <hutool-all.version>3.0.1</hutool-all.version>
+        <mybatis-generator-core.version>1.3.5</mybatis-generator-core.version>
         <maven_compiler_plugin_version>3.7.0</maven_compiler_plugin_version>
         <maven_jar_plugin_version>2.4</maven_jar_plugin_version>
         <maven_deploy_plugin_version>2.8.2</maven_deploy_plugin_version>
         <maven_assembly_plugin_version>3.1.0</maven_assembly_plugin_version>
         <maven_source_plugin_version>3.0.1</maven_source_plugin_version>
         <versions_maven_plugin_version>2.5</versions_maven_plugin_version>
-
+        <guava.version>19.0</guava.version>
+        <httpcore.version>4.4.9</httpcore.version>
         <java_source_version>1.8</java_source_version>
         <java_target_version>1.8</java_target_version>
         <file_encoding>UTF-8</file_encoding>
+
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.mybatis.generator</groupId>
+            <artifactId>mybatis-generator-core</artifactId>
+            <version>${mybatis-generator-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xiaoleilu</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool-all.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${httpcore.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.schema</groupId>
+            <artifactId>XmlSchema</artifactId>
+            <version>${XmlSchema.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.axis2/axis2-adb-codegen -->
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-adb</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-kernel</artifactId>
+            <version>1.5.1</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>axiom-api</artifactId>
+                    <groupId>org.apache.ws.commons.axiom</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>axiom-impl</artifactId>
+                    <groupId>org.apache.ws.commons.axiom</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>javax.servlet</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>XmlSchema</artifactId>
+                    <groupId>org.apache.ws.commons.schema</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-http</artifactId>
+            <version>1.5.1</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>httpcore</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-local</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -288,6 +367,31 @@
 
 
         <plugins>
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <configuration>
+                    <configurationFile>src/main/resources/generator.xml</configurationFile>
+                    <verbose>true</verbose>
+                    <overwrite>true</overwrite>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>Generate MyBatis Artifacts</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.mybatis.generator</groupId>
+                        <artifactId>mybatis-generator-core</artifactId>
+                        <version>${mybatis-generator-core.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
             <!-- Compiler 插件, 设定JDK版本 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

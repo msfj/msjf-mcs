@@ -1,86 +1,88 @@
-package com.msjf.finance.mcs.modules.sms;
+package com.msjf.finance.mcs.modules.sms.service;
 
 
 import com.alibaba.dubbo.common.utils.LogUtil;
+import com.google.common.collect.Maps;
+import com.msjf.finance.mcs.modules.organ.dao.CifCustDao;
 import com.msjf.finance.mcs.modules.sms.entity.SysSmsConfigEntity;
 import com.msjf.finance.mcs.modules.utils.CheckUtil;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * <pre>
- *     短信发送服务
- * <pre/>
- * @outhor kevin
- * @create 2018-04-16 13:44
+ *
+ *     短信发送API
+ *
  */
 @Scope("prototype")
 @Service("SmsServiceApi")
 public class SmsService {
-//
-//    /**
-//     * 模板ID
-//     */
-//    private String templateId;
-//
-//    /**
-//     * 手机号码
-//     */
-//    private String mobile;
-//
-//    /**
-//     * 短信内容
-//     */
-//    private String templateContent;
-//
-//    /**
-//     * 短信流水ID
-//     */
-//    private String seqNum;
-//
-//    /**
-//     *
-//     */
-//    private Map map;
-//
-//    /**
-//     * 客户发送方IP
-//     */
-//    private String smsIp;
-//
-//    /**
-//     * 客户登入账号
-//     */
-//    private String loginName;
-//
-//
-//    /**
-//     * <pre>
-//     *     短信发送服务
-//     * <pre/>
-//     *
-//     * @param mapParam 入参
-//     * @param rs 结果集
-//     */
-//    public void doService(HashMap<String, Object> mapParam) {
+    @Resource
+    cifCustDao;
+    /**
+     * 模板ID
+     */
+    private String templateId;
+
+    /**
+     * 手机号码
+     */
+    private String mobile;
+
+    /**
+     * 短信内容
+     */
+    private String templateContent;
+
+    /**
+     * 短信流水ID
+     */
+    private String seqNum;
+
+    /**
+     *
+     */
+    private Map map;
+
+    /**
+     * 客户发送方IP
+     */
+    private String smsIp;
+
+    /**
+     * 客户登入账号
+     */
+    private String loginName;
+
+
+    /**
+     * <pre>
+     *     短信发送服务
+     * <pre/>
+     *
+     * @param mapParam 入参
+     *
+     */
+    public void doService(HashMap<String, Object> mapParam) {
 //
 //        //1-获取入参
-//        getParam(mapParam);
+        getParam(mapParam);
 //
 //
-//        if (CheckUtil.isNull(templateId)) {
-//            //rs.failed("模板ID不能为空");
-//            return;
-//        }
+        if (CheckUtil.isNull(templateId)) {
+            //rs.failed("模板ID不能为空");
+            return;
+        }
 //
-//        if (CheckUtil.isNull(mobile)) {
-//            //rs.failed("手机号不能为空");
-//            return;
-//        }
+        if (CheckUtil.isNull(mobile)) {
+            //rs.failed("手机号不能为空");
+            return;
+        }
 //
 //        checkSmsLimit(rs);
 //        if (!rs.isSuccessful()) {
@@ -118,7 +120,7 @@ public class SmsService {
 //            throw new WsRuntimeException(e);
 //        }
 //
-//        HashMap<String, String> outMap = Maps.newHashMap();
+        HashMap<String, String> outMap = Maps.newHashMap();
 //
 //        if (CommonUtil.NO.equals(open)) {
 //            LogUtil.info("======根据控制参数设置不发送短信" + templateId + "======");
@@ -137,7 +139,8 @@ public class SmsService {
 //                return;
 //            }
 //            //6-发送短信
-//            outMap = sendSmsMessage(sysSmsConfigEntity, rs);
+        SysSmsConfigEntity sysSmsConfigEntity=new SysSmsConfigEntity();
+            outMap = sendSmsMessage(sysSmsConfigEntity);
 //        }
 //
 //        //5-更新短信发送流水
@@ -150,7 +153,7 @@ public class SmsService {
 //        } else {
 //            rs.failed(outMap.get("description"));
 //        }
-//    }
+    }
 //
 //    /**
 //     * <pre>
@@ -332,10 +335,10 @@ public class SmsService {
      * </pre>
      *
      * @param sysSmsConfigEntity 短信配置
-     * @param rs                 结果集
+     *
      * @return outMap 发送结果数据
      */
-    private HashMap<String, String> sendSmsMessage(SysSmsConfigEntity sysSmsConfigEntity, IResult rs) {
+    private HashMap<String, String> sendSmsMessage(SysSmsConfigEntity sysSmsConfigEntity) {
         HashMap<String, String> outMap = null;
         String password = sysSmsConfigEntity.getPassword();
         SmsStub.SmsResponse resp = null;
@@ -343,21 +346,23 @@ public class SmsService {
         try {
             stub = new SmsStub(sysSmsConfigEntity.getUrl());
         } catch (Exception e) {
-            rs.failed("短信发送失败,网络异常");
-            LogUtil.info("短信发送失败,网络异常" + e);
+//            rs.failed("短信发送失败,网络异常");
+//            LogUtil.info("短信发送失败,网络异常" + e);
             outMap.put("result", "999");
             outMap.put("description", "短信发送失败,网络异常");
-            updateSpmMessage(outMap, rs);
-            throw new WsRuntimeException(e);
+//            updateSpmMessage(outMap, rs);
+            throw new RuntimeException(e);
         }
         //发送接口
         SmsStub.Sms sms0 = new SmsStub.Sms();
         sms0.setIn0(sysSmsConfigEntity.getUserId());//企业编号
         sms0.setIn1(sysSmsConfigEntity.getAccount());//登录名
         sms0.setIn2(password);//密码
-        sms0.setIn3(templateContent);//短信内容
-        sms0.setIn4(mobile);//手机号码
-        sms0.setIn5(seqNum);
+//        sms0.setIn3(templateContent);//短信内容
+        sms0.setIn3("你好{tpl_name}恭喜{tpl_ora}注册成功{tpl_code}");//短信内容
+        sms0.setIn4("18565641675");//手机号码
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        sms0.setIn5(seqNum = "000" + format.format(new Date()));
         sms0.setIn6("");
         sms0.setIn7("1");
         sms0.setIn8("");
@@ -365,16 +370,16 @@ public class SmsService {
             resp = stub.Sms(sms0);
             //result=0&description=发送短信成功&taskid=2031205309919&faillist=&task_id=2031205309919
             //result=28&description=发送内容与模板不符
-            LogUtil.info("短信发送成功===" + resp.getOut());
+//            LogUtil.info("短信发送成功===" + resp.getOut());
             outMap = URLRequest(resp.getOut());
-            rs.successful("短信发送成功");
+//            rs.successful("短信发送成功");
         } catch (Exception e) {
-            rs.failed("短信发送失败");
-            LogUtil.info("短信发送失败" + e);
-            com.websuites.utils.LogUtil.debug("短信发送失败" + e);
+//            rs.failed("短信发送失败");
+//            LogUtil.info("短信发送失败" + e);
+//            com.websuites.utils.LogUtil.debug("短信发送失败" + e);
             outMap.put("result", "999");
             outMap.put("description", "程序异常");
-            updateSpmMessage(outMap, rs);
+//            updateSpmMessage(outMap, rs);
             //throw new WsRuntimeException(e);发送失败不回滚业务
         }
         return outMap;
@@ -532,59 +537,57 @@ public class SmsService {
 //        return false;
 //    }
 //
-//    private void getParam(HashMap<String, Object> mapParam) {
-//        templateId = CheckUtil.isNull(mapParam.get("templateId")) ? "" : String.valueOf(mapParam.get("templateId"));
-//        mobile = CheckUtil.isNull(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
-//        smsIp = CheckUtil.isNull(mapParam.get("smsIp")) ? "" : String.valueOf(mapParam.get("smsIp"));
-//        loginName = CheckUtil.isNull(mapParam.get("loginName")) ? "" : String.valueOf(mapParam.get("loginName"));
-//        map = Maps.newHashMap();
-//    }
+    private void getParam(HashMap<String, Object> mapParam) {
+        templateId = CheckUtil.isNull(mapParam.get("templateId")) ? "" : String.valueOf(mapParam.get("templateId"));
+        mobile = CheckUtil.isNull(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
+        smsIp = CheckUtil.isNull(mapParam.get("smsIp")) ? "" : String.valueOf(mapParam.get("smsIp"));
+        loginName = CheckUtil.isNull(mapParam.get("loginName")) ? "" : String.valueOf(mapParam.get("loginName"));
+        map = Maps.newHashMap();
+    }
+
+
+    /**
+     * 解析出url参数中的键值对
+     * 如 "Action=del&id=123"，解析出Action:del,id:123存入map中
+     *
+     *
+     * @return url请求参数部分
+     */
+    public static HashMap<String, String> URLRequest(String strUrlParam) {
+        HashMap<String, String> mapRequest = new HashMap<String, String>();
+
+        String[] arrSplit;
+
+        //每个键值为一组 www.2cto.com
+        arrSplit = strUrlParam.split("[&]");
+        for (String strSplit : arrSplit) {
+            String[] arrSplitEqual = null;
+            arrSplitEqual = strSplit.split("[=]");
+
+            //解析出键值
+            if (arrSplitEqual.length > 1) {
+                //正确解析
+                mapRequest.put(arrSplitEqual[0], arrSplitEqual[1]);
+
+            } else {
+                if (arrSplitEqual[0] != "") {
+                    //只有参数没有值，不加入
+                    mapRequest.put(arrSplitEqual[0], "");
+                }
+            }
+        }
+        return mapRequest;
+    }
 //
 //
-//    /**
-//     * 解析出url参数中的键值对
-//     * 如 "Action=del&id=123"，解析出Action:del,id:123存入map中
-//     *
-//     * @param URL url地址
-//     * @return url请求参数部分
-//     */
-//    public static HashMap<String, String> URLRequest(String strUrlParam) {
-//        HashMap<String, String> mapRequest = new HashMap<String, String>();
-//
-//        String[] arrSplit;
-//
-//        //每个键值为一组 www.2cto.com
-//        arrSplit = strUrlParam.split("[&]");
-//        for (String strSplit : arrSplit) {
-//            String[] arrSplitEqual = null;
-//            arrSplitEqual = strSplit.split("[=]");
-//
-//            //解析出键值
-//            if (arrSplitEqual.length > 1) {
-//                //正确解析
-//                mapRequest.put(arrSplitEqual[0], arrSplitEqual[1]);
-//
-//            } else {
-//                if (arrSplitEqual[0] != "") {
-//                    //只有参数没有值，不加入
-//                    mapRequest.put(arrSplitEqual[0], "");
-//                }
-//            }
-//        }
-//        return mapRequest;
-//    }
-//
-//
-//    public static void main(String[] args) {
-//        String temp = "你好{刘想}恭喜{哈哈}注册成功{哦哦}";
-//        //  System.out.println(temp.replaceAll("tpl_name", "张三"));
-//
-//        // System.out.println(URLRequest("result=0&description=发送短信成功&taskid=2031205309919&faillist=&task_id" +
-//        //         "=2031205309919"));
-//
-//        System.out.println(temp.replaceAll("[{,},{,}]", ""));
-//
-//
-//    }
-//
+    public static void main(String[] args) {
+        SysSmsConfigEntity sysSmsConfigEntity=new SysSmsConfigEntity();
+        sysSmsConfigEntity.setAccount("nb_msfw");
+        sysSmsConfigEntity.setUserId("247058");
+        sysSmsConfigEntity.setPassword("Nbsm741!+?");
+        sysSmsConfigEntity.setUrl("http://ums.zj165.com:8888/sms/services/Sms?wsdl");
+        HashMap map=new SmsService().sendSmsMessage(sysSmsConfigEntity);
+        System.out.println(map);
+    }
+
 }

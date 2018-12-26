@@ -1,12 +1,5 @@
 
-package com.szkingdom.rhtj.kpfsp.core.utils;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
-import com.websuites.core.exception.WsRuntimeException;
-import com.websuites.core.response.IResult;
-import com.websuites.core.response.Result;
-import com.websuites.utils.LogUtil;
+package com.msjf.finance.mcs.modules.utils;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -17,96 +10,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * 业务无关通用检查方法
- *
- * @author  lijs
- * @time 2018年3月5日18:30:322
- * @version 1.0
- */
 public final class CheckUtil {
 
-    /**
-     * @author liaowc
-     * @Title: checkNoNull
-     * @Description: 检查参数是否为空
-     */
-    public static boolean checkNull(Object b, String errmsg, IResult rs) {
-        boolean flag = true;
-        if (b != null) {
-            if (b instanceof String) {
-                String str = (String) b;
-                flag = ("").equals(str) ? true : ("null".equalsIgnoreCase(str) ? true : false);
-            } else {
-                flag = false;
-            }
-        }
-        if (flag) {
-            rs.failed(errmsg + "不能为空");
-        }
-        return flag;
-    }
 
-    /**
-     * @author liaowc
-     * @Title: checkArgument
-     * @Description: 检查参数是否满足条件
-     */
-    public static boolean checkArgument(boolean expression, String errcode, IResult rs) {
-        if (expression) {
-            String msg = getErrorDetail(errcode);
-            rs.setErrorMessage(msg);
-            rs.setErrorCode(errcode);
-            rs.setReturnCode(errcode);
-            return true;
-        } else {
-            return false;
-        }
-    }
 
-    /**
-     * 检查参数是否满足条件
-     *
-     * @param expression
-     * @param errcode
-     * @param replacement 替换字符串
-     * @param rs
-     * @return
-     */
-    public static boolean checkArgument(boolean expression, String errcode, String replacement, IResult rs) {
-        if (expression) {
-            String msg = getErrorDetail(errcode);
-            rs.setErrorMessage(msg.replace("$param$", replacement));
-            rs.setErrorCode(errcode);
-            rs.setReturnCode(errcode);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // 根据错误编码获取错误详情
-    protected static String getErrorDetail(final String errcode) {
-        IResult rs = new Result();
-        try {
-//            HashMap<String, ?> mapParam = Maps.newHashMap();
-            //            BexUtil.callBexDisabledAutoClear(mapParam, "f_get_spm_errcode", rs);
-            @SuppressWarnings("unchecked")
-            List<HashMap<String, String>> listResult = (List<HashMap<String, String>>) rs.getResult();
-            String errordetail = Iterators.find(listResult.iterator(), new Predicate<HashMap<String, String>>() {
-
-                @Override
-                public boolean apply(HashMap<String, String> arg0) {
-                    return arg0.get("returncode").equals(errcode);
-                }
-            }).get("errordetail");
-            return errordetail;
-        } catch (Exception e) {
-            rs.failed("获取错误码[" + errcode + "]失败!");
-            LogUtil.error("获取错误码[" + errcode + "]失败!");
-            throw new WsRuntimeException();
-        }
-    }
 
     // 判断是否为空
     public static boolean isNull(Object b) {
@@ -269,35 +176,11 @@ public final class CheckUtil {
         }
     }
 
-    /**
-     * 检查参数是否满足条件
-     *
-     * @param expression
-     * @param errcode
-     * @param replacement 替换字符串
-     * @param rs
-     * @return
-     */
-    public static boolean checkArgument(boolean expression, String errcode, String[] replacement, IResult rs) {
-        if (expression) {
-            String msg = getErrorDetail(errcode);
-            for (int i = 0; i < replacement.length; i++) {
-                String replacArg = replacement[i];
-                msg = msg.replace("$param" + i + "$", replacArg);
-            }
-            rs.setErrorMessage(msg);
-            rs.setErrorCode(errcode);
-            rs.setReturnCode(errcode);
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     /**
      * 检查日期格式是否正确(YYYYMMDDHHMMSS)
      *
-     * @param sDate
+     * @param
      * @return
      */
     public static boolean isValidDate(String str) {
@@ -319,7 +202,7 @@ public final class CheckUtil {
     /**
      * 检查日期格式是否正确(YYYYMMDD)
      *
-     * @param sDate
+     * @param
      * @return
      */
     public static boolean isValidShortDate(String str) {
@@ -343,12 +226,12 @@ public final class CheckUtil {
      * 检查手机号
      *
      * @param mobile
-     * @param rs
+     * @param
      * @return
      */
-    public static boolean checkMoblie(String mobile, IResult rs) {
+    public static boolean checkMoblie(String mobile) {
         //检查手机号码必须为纯数字
-        if (checkArgument(!checkPattern("^^\\d*$", mobile), "9424", rs)) {
+        if (!checkPattern("^^\\d*$", mobile)) {
             return false;
         }
         return true;
@@ -446,7 +329,7 @@ public final class CheckUtil {
      * @param paramsMap 传入的参数
      * @return
      */
-    public static String isParamsEmpty(String[] keys, Map<String, Object> paramsMap) throws WsRuntimeException {
+    public static String isParamsEmpty(String[] keys, Map<String, Object> paramsMap) throws RuntimeException {
         for (String key : keys) {
             if (isNull(paramsMap.get(key))) {
                 return key;
@@ -464,7 +347,7 @@ public final class CheckUtil {
      * @param length
      * @return
      */
-    public static boolean isNum(String str, int length) throws WsRuntimeException {
+    public static boolean isNum(String str, int length) throws RuntimeException {
         boolean flag = length < 1;
         String module = flag ? "^([\\d])$" : "^([\\d]{" + length + "})$";
         Pattern p = Pattern.compile(module);

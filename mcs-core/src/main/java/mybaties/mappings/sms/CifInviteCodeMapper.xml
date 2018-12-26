@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.msjf.finance.mcs.modules.sms.dao.CifInviteCodeMapper">
+  <resultMap id="BaseResultMap" type="com.msjf.finance.mcs.modules.sms.entity.CifInviteCode">
+    <id column="serialno" jdbcType="VARCHAR" property="serialno" />
+    <result column="customerno" jdbcType="VARCHAR" property="customerno" />
+    <result column="orgcustomerno" jdbcType="VARCHAR" property="orgcustomerno" />
+    <result column="certificatetype" jdbcType="VARCHAR" property="certificatetype" />
+    <result column="certificateno" jdbcType="VARCHAR" property="certificateno" />
+    <result column="ismember" jdbcType="VARCHAR" property="ismember" />
+    <result column="invitecode" jdbcType="VARCHAR" property="invitecode" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="failuretime" jdbcType="VARCHAR" property="failuretime" />
+    <result column="insertdate" jdbcType="VARCHAR" property="insertdate" />
+    <result column="inserttime" jdbcType="VARCHAR" property="inserttime" />
+    <result column="updatedate" jdbcType="VARCHAR" property="updatedate" />
+    <result column="updatetime" jdbcType="VARCHAR" property="updatetime" />
+    <result column="issendsms" jdbcType="VARCHAR" property="issendsms" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    serialno, customerno, orgcustomerno, certificatetype, certificateno, ismember, invitecode, 
+    status, failuretime, insertdate, inserttime, updatedate, updatetime, issendsms
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from cif_invite_code
+    where serialno = #{serialno,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from cif_invite_code
+    where serialno = #{serialno,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.msjf.finance.mcs.modules.sms.entity.CifInviteCode">
+    insert into cif_invite_code (serialno, customerno, orgcustomerno, 
+      certificatetype, certificateno, ismember, 
+      invitecode, status, failuretime, 
+      insertdate, inserttime, updatedate, 
+      updatetime, issendsms)
+    values (#{serialno,jdbcType=VARCHAR}, #{customerno,jdbcType=VARCHAR}, #{orgcustomerno,jdbcType=VARCHAR}, 
+      #{certificatetype,jdbcType=VARCHAR}, #{certificateno,jdbcType=VARCHAR}, #{ismember,jdbcType=VARCHAR}, 
+      #{invitecode,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{failuretime,jdbcType=VARCHAR}, 
+      #{insertdate,jdbcType=VARCHAR}, #{inserttime,jdbcType=VARCHAR}, #{updatedate,jdbcType=VARCHAR}, 
+      #{updatetime,jdbcType=VARCHAR}, #{issendsms,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.CifInviteCode">
+    insert into cif_invite_code
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="serialno != null">
+        serialno,
+      </if>
+      <if test="customerno != null">
+        customerno,
+      </if>
+      <if test="orgcustomerno != null">
+        orgcustomerno,
+      </if>
+      <if test="certificatetype != null">
+        certificatetype,
+      </if>
+      <if test="certificateno != null">
+        certificateno,
+      </if>
+      <if test="ismember != null">
+        ismember,
+      </if>
+      <if test="invitecode != null">
+        invitecode,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="failuretime != null">
+        failuretime,
+      </if>
+      <if test="insertdate != null">
+        insertdate,
+      </if>
+      <if test="inserttime != null">
+        inserttime,
+      </if>
+      <if test="updatedate != null">
+        updatedate,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="issendsms != null">
+        issendsms,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="serialno != null">
+        #{serialno,jdbcType=VARCHAR},
+      </if>
+      <if test="customerno != null">
+        #{customerno,jdbcType=VARCHAR},
+      </if>
+      <if test="orgcustomerno != null">
+        #{orgcustomerno,jdbcType=VARCHAR},
+      </if>
+      <if test="certificatetype != null">
+        #{certificatetype,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateno != null">
+        #{certificateno,jdbcType=VARCHAR},
+      </if>
+      <if test="ismember != null">
+        #{ismember,jdbcType=VARCHAR},
+      </if>
+      <if test="invitecode != null">
+        #{invitecode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="failuretime != null">
+        #{failuretime,jdbcType=VARCHAR},
+      </if>
+      <if test="insertdate != null">
+        #{insertdate,jdbcType=VARCHAR},
+      </if>
+      <if test="inserttime != null">
+        #{inserttime,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedate != null">
+        #{updatedate,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="issendsms != null">
+        #{issendsms,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.CifInviteCode">
+    update cif_invite_code
+    <set>
+      <if test="customerno != null">
+        customerno = #{customerno,jdbcType=VARCHAR},
+      </if>
+      <if test="orgcustomerno != null">
+        orgcustomerno = #{orgcustomerno,jdbcType=VARCHAR},
+      </if>
+      <if test="certificatetype != null">
+        certificatetype = #{certificatetype,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateno != null">
+        certificateno = #{certificateno,jdbcType=VARCHAR},
+      </if>
+      <if test="ismember != null">
+        ismember = #{ismember,jdbcType=VARCHAR},
+      </if>
+      <if test="invitecode != null">
+        invitecode = #{invitecode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="failuretime != null">
+        failuretime = #{failuretime,jdbcType=VARCHAR},
+      </if>
+      <if test="insertdate != null">
+        insertdate = #{insertdate,jdbcType=VARCHAR},
+      </if>
+      <if test="inserttime != null">
+        inserttime = #{inserttime,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedate != null">
+        updatedate = #{updatedate,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="issendsms != null">
+        issendsms = #{issendsms,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where serialno = #{serialno,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.CifInviteCode">
+    update cif_invite_code
+    set customerno = #{customerno,jdbcType=VARCHAR},
+      orgcustomerno = #{orgcustomerno,jdbcType=VARCHAR},
+      certificatetype = #{certificatetype,jdbcType=VARCHAR},
+      certificateno = #{certificateno,jdbcType=VARCHAR},
+      ismember = #{ismember,jdbcType=VARCHAR},
+      invitecode = #{invitecode,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      failuretime = #{failuretime,jdbcType=VARCHAR},
+      insertdate = #{insertdate,jdbcType=VARCHAR},
+      inserttime = #{inserttime,jdbcType=VARCHAR},
+      updatedate = #{updatedate,jdbcType=VARCHAR},
+      updatetime = #{updatetime,jdbcType=VARCHAR},
+      issendsms = #{issendsms,jdbcType=VARCHAR}
+    where serialno = #{serialno,jdbcType=VARCHAR}
+  </update>
+</mapper>

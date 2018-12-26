@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.msjf.finance.mcs.modules.sms.dao.SpmMessageMapper">
+  <resultMap id="BaseResultMap" type="com.msjf.finance.mcs.modules.sms.entity.SpmMessage">
+    <id column="seq_num" jdbcType="VARCHAR" property="seqNum" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="mobilephone" jdbcType="VARCHAR" property="mobilephone" />
+    <result column="customerno" jdbcType="VARCHAR" property="customerno" />
+    <result column="scheduletime" jdbcType="VARCHAR" property="scheduletime" />
+    <result column="sendchanel" jdbcType="VARCHAR" property="sendchanel" />
+    <result column="senddisplay" jdbcType="VARCHAR" property="senddisplay" />
+    <result column="businessid" jdbcType="VARCHAR" property="businessid" />
+    <result column="senddate" jdbcType="VARCHAR" property="senddate" />
+    <result column="sendmailstatus" jdbcType="VARCHAR" property="sendmailstatus" />
+    <result column="sendnotestatus" jdbcType="VARCHAR" property="sendnotestatus" />
+    <result column="readstatus" jdbcType="VARCHAR" property="readstatus" />
+    <result column="sendnotecount" jdbcType="DECIMAL" property="sendnotecount" />
+    <result column="sendmailcount" jdbcType="DECIMAL" property="sendmailcount" />
+    <result column="messageparam" jdbcType="VARCHAR" property="messageparam" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.msjf.finance.mcs.modules.sms.entity.SpmMessageWithBLOBs">
+    <result column="messagecontent" jdbcType="LONGVARCHAR" property="messagecontent" />
+    <result column="message_remark" jdbcType="LONGVARCHAR" property="messageRemark" />
+    <result column="sendmailreply" jdbcType="LONGVARCHAR" property="sendmailreply" />
+    <result column="sendnotereply" jdbcType="LONGVARCHAR" property="sendnotereply" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    seq_num, title, email, mobilephone, customerno, scheduletime, sendchanel, senddisplay, 
+    businessid, senddate, sendmailstatus, sendnotestatus, readstatus, sendnotecount, 
+    sendmailcount, messageparam
+  </sql>
+  <sql id="Blob_Column_List">
+    messagecontent, message_remark, sendmailreply, sendnotereply
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from spm_message
+    where seq_num = #{seqNum,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from spm_message
+    where seq_num = #{seqNum,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMessageWithBLOBs">
+    insert into spm_message (seq_num, title, email, 
+      mobilephone, customerno, scheduletime, 
+      sendchanel, senddisplay, businessid, 
+      senddate, sendmailstatus, sendnotestatus, 
+      readstatus, sendnotecount, sendmailcount, 
+      messageparam, messagecontent, message_remark, 
+      sendmailreply, sendnotereply)
+    values (#{seqNum,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{mobilephone,jdbcType=VARCHAR}, #{customerno,jdbcType=VARCHAR}, #{scheduletime,jdbcType=VARCHAR}, 
+      #{sendchanel,jdbcType=VARCHAR}, #{senddisplay,jdbcType=VARCHAR}, #{businessid,jdbcType=VARCHAR}, 
+      #{senddate,jdbcType=VARCHAR}, #{sendmailstatus,jdbcType=VARCHAR}, #{sendnotestatus,jdbcType=VARCHAR}, 
+      #{readstatus,jdbcType=VARCHAR}, #{sendnotecount,jdbcType=DECIMAL}, #{sendmailcount,jdbcType=DECIMAL}, 
+      #{messageparam,jdbcType=VARCHAR}, #{messagecontent,jdbcType=LONGVARCHAR}, #{messageRemark,jdbcType=LONGVARCHAR}, 
+      #{sendmailreply,jdbcType=LONGVARCHAR}, #{sendnotereply,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMessageWithBLOBs">
+    insert into spm_message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="seqNum != null">
+        seq_num,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="mobilephone != null">
+        mobilephone,
+      </if>
+      <if test="customerno != null">
+        customerno,
+      </if>
+      <if test="scheduletime != null">
+        scheduletime,
+      </if>
+      <if test="sendchanel != null">
+        sendchanel,
+      </if>
+      <if test="senddisplay != null">
+        senddisplay,
+      </if>
+      <if test="businessid != null">
+        businessid,
+      </if>
+      <if test="senddate != null">
+        senddate,
+      </if>
+      <if test="sendmailstatus != null">
+        sendmailstatus,
+      </if>
+      <if test="sendnotestatus != null">
+        sendnotestatus,
+      </if>
+      <if test="readstatus != null">
+        readstatus,
+      </if>
+      <if test="sendnotecount != null">
+        sendnotecount,
+      </if>
+      <if test="sendmailcount != null">
+        sendmailcount,
+      </if>
+      <if test="messageparam != null">
+        messageparam,
+      </if>
+      <if test="messagecontent != null">
+        messagecontent,
+      </if>
+      <if test="messageRemark != null">
+        message_remark,
+      </if>
+      <if test="sendmailreply != null">
+        sendmailreply,
+      </if>
+      <if test="sendnotereply != null">
+        sendnotereply,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="seqNum != null">
+        #{seqNum,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null">
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="customerno != null">
+        #{customerno,jdbcType=VARCHAR},
+      </if>
+      <if test="scheduletime != null">
+        #{scheduletime,jdbcType=VARCHAR},
+      </if>
+      <if test="sendchanel != null">
+        #{sendchanel,jdbcType=VARCHAR},
+      </if>
+      <if test="senddisplay != null">
+        #{senddisplay,jdbcType=VARCHAR},
+      </if>
+      <if test="businessid != null">
+        #{businessid,jdbcType=VARCHAR},
+      </if>
+      <if test="senddate != null">
+        #{senddate,jdbcType=VARCHAR},
+      </if>
+      <if test="sendmailstatus != null">
+        #{sendmailstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sendnotestatus != null">
+        #{sendnotestatus,jdbcType=VARCHAR},
+      </if>
+      <if test="readstatus != null">
+        #{readstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sendnotecount != null">
+        #{sendnotecount,jdbcType=DECIMAL},
+      </if>
+      <if test="sendmailcount != null">
+        #{sendmailcount,jdbcType=DECIMAL},
+      </if>
+      <if test="messageparam != null">
+        #{messageparam,jdbcType=VARCHAR},
+      </if>
+      <if test="messagecontent != null">
+        #{messagecontent,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="messageRemark != null">
+        #{messageRemark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="sendmailreply != null">
+        #{sendmailreply,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="sendnotereply != null">
+        #{sendnotereply,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMessageWithBLOBs">
+    update spm_message
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null">
+        mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="customerno != null">
+        customerno = #{customerno,jdbcType=VARCHAR},
+      </if>
+      <if test="scheduletime != null">
+        scheduletime = #{scheduletime,jdbcType=VARCHAR},
+      </if>
+      <if test="sendchanel != null">
+        sendchanel = #{sendchanel,jdbcType=VARCHAR},
+      </if>
+      <if test="senddisplay != null">
+        senddisplay = #{senddisplay,jdbcType=VARCHAR},
+      </if>
+      <if test="businessid != null">
+        businessid = #{businessid,jdbcType=VARCHAR},
+      </if>
+      <if test="senddate != null">
+        senddate = #{senddate,jdbcType=VARCHAR},
+      </if>
+      <if test="sendmailstatus != null">
+        sendmailstatus = #{sendmailstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sendnotestatus != null">
+        sendnotestatus = #{sendnotestatus,jdbcType=VARCHAR},
+      </if>
+      <if test="readstatus != null">
+        readstatus = #{readstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sendnotecount != null">
+        sendnotecount = #{sendnotecount,jdbcType=DECIMAL},
+      </if>
+      <if test="sendmailcount != null">
+        sendmailcount = #{sendmailcount,jdbcType=DECIMAL},
+      </if>
+      <if test="messageparam != null">
+        messageparam = #{messageparam,jdbcType=VARCHAR},
+      </if>
+      <if test="messagecontent != null">
+        messagecontent = #{messagecontent,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="messageRemark != null">
+        message_remark = #{messageRemark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="sendmailreply != null">
+        sendmailreply = #{sendmailreply,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="sendnotereply != null">
+        sendnotereply = #{sendnotereply,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where seq_num = #{seqNum,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMessageWithBLOBs">
+    update spm_message
+    set title = #{title,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      customerno = #{customerno,jdbcType=VARCHAR},
+      scheduletime = #{scheduletime,jdbcType=VARCHAR},
+      sendchanel = #{sendchanel,jdbcType=VARCHAR},
+      senddisplay = #{senddisplay,jdbcType=VARCHAR},
+      businessid = #{businessid,jdbcType=VARCHAR},
+      senddate = #{senddate,jdbcType=VARCHAR},
+      sendmailstatus = #{sendmailstatus,jdbcType=VARCHAR},
+      sendnotestatus = #{sendnotestatus,jdbcType=VARCHAR},
+      readstatus = #{readstatus,jdbcType=VARCHAR},
+      sendnotecount = #{sendnotecount,jdbcType=DECIMAL},
+      sendmailcount = #{sendmailcount,jdbcType=DECIMAL},
+      messageparam = #{messageparam,jdbcType=VARCHAR},
+      messagecontent = #{messagecontent,jdbcType=LONGVARCHAR},
+      message_remark = #{messageRemark,jdbcType=LONGVARCHAR},
+      sendmailreply = #{sendmailreply,jdbcType=LONGVARCHAR},
+      sendnotereply = #{sendnotereply,jdbcType=LONGVARCHAR}
+    where seq_num = #{seqNum,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMessage">
+    update spm_message
+    set title = #{title,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      customerno = #{customerno,jdbcType=VARCHAR},
+      scheduletime = #{scheduletime,jdbcType=VARCHAR},
+      sendchanel = #{sendchanel,jdbcType=VARCHAR},
+      senddisplay = #{senddisplay,jdbcType=VARCHAR},
+      businessid = #{businessid,jdbcType=VARCHAR},
+      senddate = #{senddate,jdbcType=VARCHAR},
+      sendmailstatus = #{sendmailstatus,jdbcType=VARCHAR},
+      sendnotestatus = #{sendnotestatus,jdbcType=VARCHAR},
+      readstatus = #{readstatus,jdbcType=VARCHAR},
+      sendnotecount = #{sendnotecount,jdbcType=DECIMAL},
+      sendmailcount = #{sendmailcount,jdbcType=DECIMAL},
+      messageparam = #{messageparam,jdbcType=VARCHAR}
+    where seq_num = #{seqNum,jdbcType=VARCHAR}
+  </update>
+</mapper>

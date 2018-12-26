@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.msjf.finance.mcs.modules.sms.dao.SpmSmsControlTbMapper">
+  <resultMap id="BaseResultMap" type="com.msjf.finance.mcs.modules.sms.entity.SpmSmsControlTb">
+    <id column="control_key" jdbcType="VARCHAR" property="controlKey" />
+    <result column="cumulative_total" jdbcType="INTEGER" property="cumulativeTotal" />
+    <result column="today_total" jdbcType="INTEGER" property="todayTotal" />
+    <result column="insert_date" jdbcType="VARCHAR" property="insertDate" />
+    <result column="insert_time" jdbcType="VARCHAR" property="insertTime" />
+    <result column="update_date" jdbcType="VARCHAR" property="updateDate" />
+    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    control_key, cumulative_total, today_total, insert_date, insert_time, update_date, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from spm_sms_control_tb
+    where control_key = #{controlKey,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from spm_sms_control_tb
+    where control_key = #{controlKey,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmSmsControlTb">
+    insert into spm_sms_control_tb (control_key, cumulative_total, today_total, 
+      insert_date, insert_time, update_date, 
+      update_time)
+    values (#{controlKey,jdbcType=VARCHAR}, #{cumulativeTotal,jdbcType=INTEGER}, #{todayTotal,jdbcType=INTEGER}, 
+      #{insertDate,jdbcType=VARCHAR}, #{insertTime,jdbcType=VARCHAR}, #{updateDate,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmSmsControlTb">
+    insert into spm_sms_control_tb
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="controlKey != null">
+        control_key,
+      </if>
+      <if test="cumulativeTotal != null">
+        cumulative_total,
+      </if>
+      <if test="todayTotal != null">
+        today_total,
+      </if>
+      <if test="insertDate != null">
+        insert_date,
+      </if>
+      <if test="insertTime != null">
+        insert_time,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="controlKey != null">
+        #{controlKey,jdbcType=VARCHAR},
+      </if>
+      <if test="cumulativeTotal != null">
+        #{cumulativeTotal,jdbcType=INTEGER},
+      </if>
+      <if test="todayTotal != null">
+        #{todayTotal,jdbcType=INTEGER},
+      </if>
+      <if test="insertDate != null">
+        #{insertDate,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null">
+        #{insertTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmSmsControlTb">
+    update spm_sms_control_tb
+    <set>
+      <if test="cumulativeTotal != null">
+        cumulative_total = #{cumulativeTotal,jdbcType=INTEGER},
+      </if>
+      <if test="todayTotal != null">
+        today_total = #{todayTotal,jdbcType=INTEGER},
+      </if>
+      <if test="insertDate != null">
+        insert_date = #{insertDate,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null">
+        insert_time = #{insertTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where control_key = #{controlKey,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmSmsControlTb">
+    update spm_sms_control_tb
+    set cumulative_total = #{cumulativeTotal,jdbcType=INTEGER},
+      today_total = #{todayTotal,jdbcType=INTEGER},
+      insert_date = #{insertDate,jdbcType=VARCHAR},
+      insert_time = #{insertTime,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=VARCHAR}
+    where control_key = #{controlKey,jdbcType=VARCHAR}
+  </update>
+</mapper>
