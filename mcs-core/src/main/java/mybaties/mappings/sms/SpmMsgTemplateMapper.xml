@@ -161,4 +161,324 @@
       and distributor_id = #{distributorId,jdbcType=VARCHAR}
       and template_id = #{templateId,jdbcType=VARCHAR}
   </update>
+  <resultMap id="BaseResultMap" type="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplate">
+    <id column="exchange_id" jdbcType="VARCHAR" property="exchangeId" />
+    <id column="distributor_id" jdbcType="VARCHAR" property="distributorId" />
+    <id column="template_id" jdbcType="VARCHAR" property="templateId" />
+    <result column="template_name" jdbcType="VARCHAR" property="templateName" />
+    <result column="template_content" jdbcType="VARCHAR" property="templateContent" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="template_keys" jdbcType="VARCHAR" property="templateKeys" />
+    <result column="template_sort" jdbcType="INTEGER" property="templateSort" />
+    <result column="date_pattern" jdbcType="VARCHAR" property="datePattern" />
+    <result column="api_id" jdbcType="VARCHAR" property="apiId" />
+    <result column="template_sms_content" jdbcType="VARCHAR" property="templateSmsContent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    exchange_id, distributor_id, template_id, template_name, template_content, status, 
+    template_keys, template_sort, date_pattern, api_id, template_sms_content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplateKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from spm_msg_template
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and template_id = #{templateId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplateKey">
+    delete from spm_msg_template
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and template_id = #{templateId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplate">
+    insert into spm_msg_template (exchange_id, distributor_id, template_id, 
+      template_name, template_content, status, 
+      template_keys, template_sort, date_pattern, 
+      api_id, template_sms_content)
+    values (#{exchangeId,jdbcType=VARCHAR}, #{distributorId,jdbcType=VARCHAR}, #{templateId,jdbcType=VARCHAR}, 
+      #{templateName,jdbcType=VARCHAR}, #{templateContent,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{templateKeys,jdbcType=VARCHAR}, #{templateSort,jdbcType=INTEGER}, #{datePattern,jdbcType=VARCHAR}, 
+      #{apiId,jdbcType=VARCHAR}, #{templateSmsContent,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplate">
+    insert into spm_msg_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="exchangeId != null">
+        exchange_id,
+      </if>
+      <if test="distributorId != null">
+        distributor_id,
+      </if>
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="templateName != null">
+        template_name,
+      </if>
+      <if test="templateContent != null">
+        template_content,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="templateKeys != null">
+        template_keys,
+      </if>
+      <if test="templateSort != null">
+        template_sort,
+      </if>
+      <if test="datePattern != null">
+        date_pattern,
+      </if>
+      <if test="apiId != null">
+        api_id,
+      </if>
+      <if test="templateSmsContent != null">
+        template_sms_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="exchangeId != null">
+        #{exchangeId,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorId != null">
+        #{distributorId,jdbcType=VARCHAR},
+      </if>
+      <if test="templateId != null">
+        #{templateId,jdbcType=VARCHAR},
+      </if>
+      <if test="templateName != null">
+        #{templateName,jdbcType=VARCHAR},
+      </if>
+      <if test="templateContent != null">
+        #{templateContent,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="templateKeys != null">
+        #{templateKeys,jdbcType=VARCHAR},
+      </if>
+      <if test="templateSort != null">
+        #{templateSort,jdbcType=INTEGER},
+      </if>
+      <if test="datePattern != null">
+        #{datePattern,jdbcType=VARCHAR},
+      </if>
+      <if test="apiId != null">
+        #{apiId,jdbcType=VARCHAR},
+      </if>
+      <if test="templateSmsContent != null">
+        #{templateSmsContent,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplate">
+    update spm_msg_template
+    <set>
+      <if test="templateName != null">
+        template_name = #{templateName,jdbcType=VARCHAR},
+      </if>
+      <if test="templateContent != null">
+        template_content = #{templateContent,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="templateKeys != null">
+        template_keys = #{templateKeys,jdbcType=VARCHAR},
+      </if>
+      <if test="templateSort != null">
+        template_sort = #{templateSort,jdbcType=INTEGER},
+      </if>
+      <if test="datePattern != null">
+        date_pattern = #{datePattern,jdbcType=VARCHAR},
+      </if>
+      <if test="apiId != null">
+        api_id = #{apiId,jdbcType=VARCHAR},
+      </if>
+      <if test="templateSmsContent != null">
+        template_sms_content = #{templateSmsContent,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and template_id = #{templateId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplate">
+    update spm_msg_template
+    set template_name = #{templateName,jdbcType=VARCHAR},
+      template_content = #{templateContent,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      template_keys = #{templateKeys,jdbcType=VARCHAR},
+      template_sort = #{templateSort,jdbcType=INTEGER},
+      date_pattern = #{datePattern,jdbcType=VARCHAR},
+      api_id = #{apiId,jdbcType=VARCHAR},
+      template_sms_content = #{templateSmsContent,jdbcType=VARCHAR}
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and template_id = #{templateId,jdbcType=VARCHAR}
+  </update>
+  <resultMap id="BaseResultMap" type="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplate">
+    <id column="exchange_id" jdbcType="VARCHAR" property="exchangeId" />
+    <id column="distributor_id" jdbcType="VARCHAR" property="distributorId" />
+    <id column="template_id" jdbcType="VARCHAR" property="templateId" />
+    <result column="template_name" jdbcType="VARCHAR" property="templateName" />
+    <result column="template_content" jdbcType="VARCHAR" property="templateContent" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="template_keys" jdbcType="VARCHAR" property="templateKeys" />
+    <result column="template_sort" jdbcType="INTEGER" property="templateSort" />
+    <result column="date_pattern" jdbcType="VARCHAR" property="datePattern" />
+    <result column="api_id" jdbcType="VARCHAR" property="apiId" />
+    <result column="template_sms_content" jdbcType="VARCHAR" property="templateSmsContent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    exchange_id, distributor_id, template_id, template_name, template_content, status, 
+    template_keys, template_sort, date_pattern, api_id, template_sms_content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplateKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from spm_msg_template
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and template_id = #{templateId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplateKey">
+    delete from spm_msg_template
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and template_id = #{templateId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplate">
+    insert into spm_msg_template (exchange_id, distributor_id, template_id, 
+      template_name, template_content, status, 
+      template_keys, template_sort, date_pattern, 
+      api_id, template_sms_content)
+    values (#{exchangeId,jdbcType=VARCHAR}, #{distributorId,jdbcType=VARCHAR}, #{templateId,jdbcType=VARCHAR}, 
+      #{templateName,jdbcType=VARCHAR}, #{templateContent,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{templateKeys,jdbcType=VARCHAR}, #{templateSort,jdbcType=INTEGER}, #{datePattern,jdbcType=VARCHAR}, 
+      #{apiId,jdbcType=VARCHAR}, #{templateSmsContent,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplate">
+    insert into spm_msg_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="exchangeId != null">
+        exchange_id,
+      </if>
+      <if test="distributorId != null">
+        distributor_id,
+      </if>
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="templateName != null">
+        template_name,
+      </if>
+      <if test="templateContent != null">
+        template_content,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="templateKeys != null">
+        template_keys,
+      </if>
+      <if test="templateSort != null">
+        template_sort,
+      </if>
+      <if test="datePattern != null">
+        date_pattern,
+      </if>
+      <if test="apiId != null">
+        api_id,
+      </if>
+      <if test="templateSmsContent != null">
+        template_sms_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="exchangeId != null">
+        #{exchangeId,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorId != null">
+        #{distributorId,jdbcType=VARCHAR},
+      </if>
+      <if test="templateId != null">
+        #{templateId,jdbcType=VARCHAR},
+      </if>
+      <if test="templateName != null">
+        #{templateName,jdbcType=VARCHAR},
+      </if>
+      <if test="templateContent != null">
+        #{templateContent,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="templateKeys != null">
+        #{templateKeys,jdbcType=VARCHAR},
+      </if>
+      <if test="templateSort != null">
+        #{templateSort,jdbcType=INTEGER},
+      </if>
+      <if test="datePattern != null">
+        #{datePattern,jdbcType=VARCHAR},
+      </if>
+      <if test="apiId != null">
+        #{apiId,jdbcType=VARCHAR},
+      </if>
+      <if test="templateSmsContent != null">
+        #{templateSmsContent,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplate">
+    update spm_msg_template
+    <set>
+      <if test="templateName != null">
+        template_name = #{templateName,jdbcType=VARCHAR},
+      </if>
+      <if test="templateContent != null">
+        template_content = #{templateContent,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="templateKeys != null">
+        template_keys = #{templateKeys,jdbcType=VARCHAR},
+      </if>
+      <if test="templateSort != null">
+        template_sort = #{templateSort,jdbcType=INTEGER},
+      </if>
+      <if test="datePattern != null">
+        date_pattern = #{datePattern,jdbcType=VARCHAR},
+      </if>
+      <if test="apiId != null">
+        api_id = #{apiId,jdbcType=VARCHAR},
+      </if>
+      <if test="templateSmsContent != null">
+        template_sms_content = #{templateSmsContent,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and template_id = #{templateId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplate">
+    update spm_msg_template
+    set template_name = #{templateName,jdbcType=VARCHAR},
+      template_content = #{templateContent,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      template_keys = #{templateKeys,jdbcType=VARCHAR},
+      template_sort = #{templateSort,jdbcType=INTEGER},
+      date_pattern = #{datePattern,jdbcType=VARCHAR},
+      api_id = #{apiId,jdbcType=VARCHAR},
+      template_sms_content = #{templateSmsContent,jdbcType=VARCHAR}
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and template_id = #{templateId,jdbcType=VARCHAR}
+  </update>
 </mapper>

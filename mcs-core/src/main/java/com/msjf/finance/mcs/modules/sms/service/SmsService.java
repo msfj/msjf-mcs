@@ -4,6 +4,8 @@ package com.msjf.finance.mcs.modules.sms.service;
 import com.alibaba.dubbo.common.utils.LogUtil;
 import com.google.common.collect.Maps;
 import com.msjf.finance.mcs.modules.organ.dao.CifCustDao;
+import com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigMapper;
+import com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigKey;
 import com.msjf.finance.mcs.modules.sms.entity.SysSmsConfigEntity;
 import com.msjf.finance.mcs.modules.utils.CheckUtil;
 import org.springframework.context.annotation.Scope;
@@ -23,7 +25,7 @@ import java.util.*;
 @Service("SmsServiceApi")
 public class SmsService {
     @Resource
-    CifCustDao cifCustDao;
+    SysParamsConfigMapper sysParamsConfigMapper;
     /**
      * 模板ID
      */
@@ -90,8 +92,11 @@ public class SmsService {
 //        }
 //
 //
-//        //1-获取系统参数
+        //1-获取系统参数
 //        String open = CommonUtil.getSysConfigValue("sms_open_params_config", "sms_open_params_config");
+        SysParamsConfigKey sysParamsConfigKey=new SysParamsConfigKey();
+        sysParamsConfigKey.setDistributorId("1");
+        sysParamsConfigMapper.selectByPrimaryKey(sysParamsConfigKey);
 //        if (!(CommonUtil.NO.equals(open) || CommonUtil.YES.equals(open))) {
 //            rs.failed("系统参数异常");
 //            return;

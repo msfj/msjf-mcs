@@ -441,4 +441,444 @@
       edit_by = #{editBy,jdbcType=VARCHAR}
     where sms_id = #{smsId,jdbcType=VARCHAR}
   </update>
+  <resultMap id="BaseResultMap" type="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfig">
+    <id column="sms_id" jdbcType="VARCHAR" property="smsId" />
+    <result column="exchange_id" jdbcType="VARCHAR" property="exchangeId" />
+    <result column="distributor_id" jdbcType="VARCHAR" property="distributorId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sms_type" jdbcType="VARCHAR" property="smsType" />
+    <result column="service_provider" jdbcType="VARCHAR" property="serviceProvider" />
+    <result column="ctrl_param" jdbcType="VARCHAR" property="ctrlParam" />
+    <result column="ctrl_comment" jdbcType="VARCHAR" property="ctrlComment" />
+    <result column="create_datetime" jdbcType="VARCHAR" property="createDatetime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="edit_datetime" jdbcType="VARCHAR" property="editDatetime" />
+    <result column="edit_by" jdbcType="VARCHAR" property="editBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sms_id, exchange_id, distributor_id, user_id, account, password, url, status, sms_type, 
+    service_provider, ctrl_param, ctrl_comment, create_datetime, create_by, edit_datetime, 
+    edit_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_sms_config
+    where sms_id = #{smsId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_sms_config
+    where sms_id = #{smsId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfig">
+    insert into sys_sms_config (sms_id, exchange_id, distributor_id, 
+      user_id, account, password, 
+      url, status, sms_type, 
+      service_provider, ctrl_param, ctrl_comment, 
+      create_datetime, create_by, edit_datetime, 
+      edit_by)
+    values (#{smsId,jdbcType=VARCHAR}, #{exchangeId,jdbcType=VARCHAR}, #{distributorId,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{smsType,jdbcType=VARCHAR}, 
+      #{serviceProvider,jdbcType=VARCHAR}, #{ctrlParam,jdbcType=VARCHAR}, #{ctrlComment,jdbcType=VARCHAR}, 
+      #{createDatetime,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, #{editDatetime,jdbcType=VARCHAR}, 
+      #{editBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfig">
+    insert into sys_sms_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="smsId != null">
+        sms_id,
+      </if>
+      <if test="exchangeId != null">
+        exchange_id,
+      </if>
+      <if test="distributorId != null">
+        distributor_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="account != null">
+        account,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="smsType != null">
+        sms_type,
+      </if>
+      <if test="serviceProvider != null">
+        service_provider,
+      </if>
+      <if test="ctrlParam != null">
+        ctrl_param,
+      </if>
+      <if test="ctrlComment != null">
+        ctrl_comment,
+      </if>
+      <if test="createDatetime != null">
+        create_datetime,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="editDatetime != null">
+        edit_datetime,
+      </if>
+      <if test="editBy != null">
+        edit_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="smsId != null">
+        #{smsId,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeId != null">
+        #{exchangeId,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorId != null">
+        #{distributorId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="smsType != null">
+        #{smsType,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceProvider != null">
+        #{serviceProvider,jdbcType=VARCHAR},
+      </if>
+      <if test="ctrlParam != null">
+        #{ctrlParam,jdbcType=VARCHAR},
+      </if>
+      <if test="ctrlComment != null">
+        #{ctrlComment,jdbcType=VARCHAR},
+      </if>
+      <if test="createDatetime != null">
+        #{createDatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="editDatetime != null">
+        #{editDatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="editBy != null">
+        #{editBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfig">
+    update sys_sms_config
+    <set>
+      <if test="exchangeId != null">
+        exchange_id = #{exchangeId,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorId != null">
+        distributor_id = #{distributorId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="smsType != null">
+        sms_type = #{smsType,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceProvider != null">
+        service_provider = #{serviceProvider,jdbcType=VARCHAR},
+      </if>
+      <if test="ctrlParam != null">
+        ctrl_param = #{ctrlParam,jdbcType=VARCHAR},
+      </if>
+      <if test="ctrlComment != null">
+        ctrl_comment = #{ctrlComment,jdbcType=VARCHAR},
+      </if>
+      <if test="createDatetime != null">
+        create_datetime = #{createDatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="editDatetime != null">
+        edit_datetime = #{editDatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="editBy != null">
+        edit_by = #{editBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sms_id = #{smsId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfig">
+    update sys_sms_config
+    set exchange_id = #{exchangeId,jdbcType=VARCHAR},
+      distributor_id = #{distributorId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      account = #{account,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      sms_type = #{smsType,jdbcType=VARCHAR},
+      service_provider = #{serviceProvider,jdbcType=VARCHAR},
+      ctrl_param = #{ctrlParam,jdbcType=VARCHAR},
+      ctrl_comment = #{ctrlComment,jdbcType=VARCHAR},
+      create_datetime = #{createDatetime,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      edit_datetime = #{editDatetime,jdbcType=VARCHAR},
+      edit_by = #{editBy,jdbcType=VARCHAR}
+    where sms_id = #{smsId,jdbcType=VARCHAR}
+  </update>
+  <resultMap id="BaseResultMap" type="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfig">
+    <id column="sms_id" jdbcType="VARCHAR" property="smsId" />
+    <result column="exchange_id" jdbcType="VARCHAR" property="exchangeId" />
+    <result column="distributor_id" jdbcType="VARCHAR" property="distributorId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sms_type" jdbcType="VARCHAR" property="smsType" />
+    <result column="service_provider" jdbcType="VARCHAR" property="serviceProvider" />
+    <result column="ctrl_param" jdbcType="VARCHAR" property="ctrlParam" />
+    <result column="ctrl_comment" jdbcType="VARCHAR" property="ctrlComment" />
+    <result column="create_datetime" jdbcType="VARCHAR" property="createDatetime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="edit_datetime" jdbcType="VARCHAR" property="editDatetime" />
+    <result column="edit_by" jdbcType="VARCHAR" property="editBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sms_id, exchange_id, distributor_id, user_id, account, password, url, status, sms_type, 
+    service_provider, ctrl_param, ctrl_comment, create_datetime, create_by, edit_datetime, 
+    edit_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_sms_config
+    where sms_id = #{smsId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_sms_config
+    where sms_id = #{smsId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfig">
+    insert into sys_sms_config (sms_id, exchange_id, distributor_id, 
+      user_id, account, password, 
+      url, status, sms_type, 
+      service_provider, ctrl_param, ctrl_comment, 
+      create_datetime, create_by, edit_datetime, 
+      edit_by)
+    values (#{smsId,jdbcType=VARCHAR}, #{exchangeId,jdbcType=VARCHAR}, #{distributorId,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{smsType,jdbcType=VARCHAR}, 
+      #{serviceProvider,jdbcType=VARCHAR}, #{ctrlParam,jdbcType=VARCHAR}, #{ctrlComment,jdbcType=VARCHAR}, 
+      #{createDatetime,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, #{editDatetime,jdbcType=VARCHAR}, 
+      #{editBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfig">
+    insert into sys_sms_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="smsId != null">
+        sms_id,
+      </if>
+      <if test="exchangeId != null">
+        exchange_id,
+      </if>
+      <if test="distributorId != null">
+        distributor_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="account != null">
+        account,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="smsType != null">
+        sms_type,
+      </if>
+      <if test="serviceProvider != null">
+        service_provider,
+      </if>
+      <if test="ctrlParam != null">
+        ctrl_param,
+      </if>
+      <if test="ctrlComment != null">
+        ctrl_comment,
+      </if>
+      <if test="createDatetime != null">
+        create_datetime,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="editDatetime != null">
+        edit_datetime,
+      </if>
+      <if test="editBy != null">
+        edit_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="smsId != null">
+        #{smsId,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeId != null">
+        #{exchangeId,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorId != null">
+        #{distributorId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="smsType != null">
+        #{smsType,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceProvider != null">
+        #{serviceProvider,jdbcType=VARCHAR},
+      </if>
+      <if test="ctrlParam != null">
+        #{ctrlParam,jdbcType=VARCHAR},
+      </if>
+      <if test="ctrlComment != null">
+        #{ctrlComment,jdbcType=VARCHAR},
+      </if>
+      <if test="createDatetime != null">
+        #{createDatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="editDatetime != null">
+        #{editDatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="editBy != null">
+        #{editBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfig">
+    update sys_sms_config
+    <set>
+      <if test="exchangeId != null">
+        exchange_id = #{exchangeId,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorId != null">
+        distributor_id = #{distributorId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="smsType != null">
+        sms_type = #{smsType,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceProvider != null">
+        service_provider = #{serviceProvider,jdbcType=VARCHAR},
+      </if>
+      <if test="ctrlParam != null">
+        ctrl_param = #{ctrlParam,jdbcType=VARCHAR},
+      </if>
+      <if test="ctrlComment != null">
+        ctrl_comment = #{ctrlComment,jdbcType=VARCHAR},
+      </if>
+      <if test="createDatetime != null">
+        create_datetime = #{createDatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="editDatetime != null">
+        edit_datetime = #{editDatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="editBy != null">
+        edit_by = #{editBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sms_id = #{smsId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfig">
+    update sys_sms_config
+    set exchange_id = #{exchangeId,jdbcType=VARCHAR},
+      distributor_id = #{distributorId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      account = #{account,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      sms_type = #{smsType,jdbcType=VARCHAR},
+      service_provider = #{serviceProvider,jdbcType=VARCHAR},
+      ctrl_param = #{ctrlParam,jdbcType=VARCHAR},
+      ctrl_comment = #{ctrlComment,jdbcType=VARCHAR},
+      create_datetime = #{createDatetime,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      edit_datetime = #{editDatetime,jdbcType=VARCHAR},
+      edit_by = #{editBy,jdbcType=VARCHAR}
+    where sms_id = #{smsId,jdbcType=VARCHAR}
+  </update>
 </mapper>
