@@ -7,5 +7,5 @@
 
 
  <!--   <dubbo:reference interface="com.qihoo.finance.dcf.facade.StartGetDataFacade" id="startGetDataFacade" timeout="60000" check="false" cluster="failfast"/>-->
- <dubbo:reference interface="com.msjf.finance.pas.facade.organ.CustInfoFacade" id="custInfoFacade" timeout="60000" check="false" cluster="failfast"/>
+ <!--<dubbo:reference interface="com.msjf.finance.pas.facade.organ.CustInfoFacade" id="custInfoFacade" timeout="60000" check="false" cluster="failfast"/>-->
 </beans>

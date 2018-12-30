@@ -24,9 +24,12 @@ public class Response<T> implements Serializable {
         return success();
     }
 
-    @Deprecated
     public Response success(String code, String msg, T data) {
         this.code = code;
+        this.msg = msg;
+        return success(data);
+    }
+    public Response success( String msg, T data) {
         this.msg = msg;
         return success(data);
     }
@@ -58,12 +61,22 @@ public class Response<T> implements Serializable {
         this.flag = RespFlagEnum.FAIL.getCode();
         return this;
     }
-
-    @Deprecated
+    public Response fail( String msg) {
+        this.msg = msg;
+        return this.fail();
+    }
     public Response fail(String code, String msg) {
         this.code = code;
         this.msg = msg;
         return this.fail();
+    }
+    public Response fail(T data) {
+        this.data=data;
+        return this.fail();
+    }
+    public Response fail( String msg,T data) {
+        this.msg = msg;
+        return this.fail(data);
     }
 
     public Response fail(ResponseService responseService) {

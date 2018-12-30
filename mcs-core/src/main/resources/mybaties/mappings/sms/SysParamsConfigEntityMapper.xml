@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigEntityMapper">
+  <resultMap id="BaseResultMap" type="com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntity">
+    <id column="exchange_id" jdbcType="VARCHAR" property="exchangeId" />
+    <id column="distributor_id" jdbcType="VARCHAR" property="distributorId" />
+    <id column="param_id" jdbcType="VARCHAR" property="paramId" />
+    <id column="param_type" jdbcType="VARCHAR" property="paramType" />
+    <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
+    <result column="comments" jdbcType="VARCHAR" property="comments" />
+    <result column="param_status" jdbcType="INTEGER" property="paramStatus" />
+    <result column="sort_no" jdbcType="INTEGER" property="sortNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    exchange_id, distributor_id, param_id, param_type, param_value, comments, param_status, 
+    sort_no
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntityKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_params_config
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and param_id = #{paramId,jdbcType=VARCHAR}
+      and param_type = #{paramType,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntityKey">
+    delete from sys_params_config
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and param_id = #{paramId,jdbcType=VARCHAR}
+      and param_type = #{paramType,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntity">
+    insert into sys_params_config (exchange_id, distributor_id, param_id, 
+      param_type, param_value, comments, 
+      param_status, sort_no)
+    values (#{exchangeId,jdbcType=VARCHAR}, #{distributorId,jdbcType=VARCHAR}, #{paramId,jdbcType=VARCHAR}, 
+      #{paramType,jdbcType=VARCHAR}, #{paramValue,jdbcType=VARCHAR}, #{comments,jdbcType=VARCHAR}, 
+      #{paramStatus,jdbcType=INTEGER}, #{sortNo,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntity">
+    insert into sys_params_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="exchangeId != null">
+        exchange_id,
+      </if>
+      <if test="distributorId != null">
+        distributor_id,
+      </if>
+      <if test="paramId != null">
+        param_id,
+      </if>
+      <if test="paramType != null">
+        param_type,
+      </if>
+      <if test="paramValue != null">
+        param_value,
+      </if>
+      <if test="comments != null">
+        comments,
+      </if>
+      <if test="paramStatus != null">
+        param_status,
+      </if>
+      <if test="sortNo != null">
+        sort_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="exchangeId != null">
+        #{exchangeId,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorId != null">
+        #{distributorId,jdbcType=VARCHAR},
+      </if>
+      <if test="paramId != null">
+        #{paramId,jdbcType=VARCHAR},
+      </if>
+      <if test="paramType != null">
+        #{paramType,jdbcType=VARCHAR},
+      </if>
+      <if test="paramValue != null">
+        #{paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null">
+        #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="paramStatus != null">
+        #{paramStatus,jdbcType=INTEGER},
+      </if>
+      <if test="sortNo != null">
+        #{sortNo,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntity">
+    update sys_params_config
+    <set>
+      <if test="paramValue != null">
+        param_value = #{paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null">
+        comments = #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="paramStatus != null">
+        param_status = #{paramStatus,jdbcType=INTEGER},
+      </if>
+      <if test="sortNo != null">
+        sort_no = #{sortNo,jdbcType=INTEGER},
+      </if>
+    </set>
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and param_id = #{paramId,jdbcType=VARCHAR}
+      and param_type = #{paramType,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntity">
+    update sys_params_config
+    set param_value = #{paramValue,jdbcType=VARCHAR},
+      comments = #{comments,jdbcType=VARCHAR},
+      param_status = #{paramStatus,jdbcType=INTEGER},
+      sort_no = #{sortNo,jdbcType=INTEGER}
+    where exchange_id = #{exchangeId,jdbcType=VARCHAR}
+      and distributor_id = #{distributorId,jdbcType=VARCHAR}
+      and param_id = #{paramId,jdbcType=VARCHAR}
+      and param_type = #{paramType,jdbcType=VARCHAR}
+  </update>
+</mapper>

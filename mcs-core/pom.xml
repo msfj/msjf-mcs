@@ -29,7 +29,6 @@
         <java_source_version>1.8</java_source_version>
         <java_target_version>1.8</java_target_version>
         <file_encoding>UTF-8</file_encoding>
-
     </properties>
 
     <dependencies>
@@ -126,11 +125,11 @@
             <version>3.1.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.msjf.finance</groupId>
-            <artifactId>pas-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.msjf.finance</groupId>-->
+            <!--<artifactId>pas-api</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -395,6 +394,7 @@
                         <!--<groupId>mysql</groupId>-->
                         <!--<artifactId>mysql-connector-java</artifactId>-->
                         <!--<version>${mysql-driver.version}</version>-->
+                        <!--<scope>runtime</scope>-->
                     <!--</dependency>-->
                 <!--</dependencies>-->
             <!--</plugin>-->
