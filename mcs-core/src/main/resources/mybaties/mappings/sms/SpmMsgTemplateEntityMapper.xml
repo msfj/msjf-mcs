@@ -161,4 +161,29 @@
       and distributor_id = #{distributorId,jdbcType=VARCHAR}
       and template_id = #{templateId,jdbcType=VARCHAR}
   </update>
+  <!--短信模版spm_msg_template 按实体查询锁表-->
+  <select id="selectByEntityLock" parameterType="com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplateEntity"
+          resultMap="BaseResultMap">
+<![CDATA[
+		select
+		]]>
+    <include refid="Base_Column_List" />
+    <![CDATA[
+		from mcs.spm_msg_template
+	]]>
+  <where>
+    <if test="exchangeId != null and exchangeId!= '' "><![CDATA[ and exchange_id=#{exchangeId}]]></if>
+    <if test="distributorId != null and distributorId!= '' "><![CDATA[ and distributor_id=#{distributorId}]]></if>
+    <if test="templateId != null and templateId!= '' "><![CDATA[ and template_id=#{templateId}]]></if>
+    <if test="templateName != null and templateName!= '' "><![CDATA[ and template_name=#{templateName}]]></if>
+    <if test="templateContent != null and templateContent!= '' "><![CDATA[ and template_content=#{templateContent}]]></if>
+    <if test="templateSmsContent != null and templateSmsContent!= '' "><![CDATA[ and template_sms_content=#{templateSmsContent}]]></if>
+    <if test="status != null and status!= '' "><![CDATA[ and status=#{status}]]></if>
+    <if test="templateKeys != null and templateKeys!= '' "><![CDATA[ and template_keys=#{templateKeys}]]></if>
+    <if test="templateSort != null and templateSort!= '' "><![CDATA[ and template_sort=#{templateSort}]]></if>
+    <if test="datePattern != null and datePattern!= '' "><![CDATA[ and date_pattern=#{datePattern}]]></if>
+    <if test="apiId != null and apiId!= '' "><![CDATA[ and api_id=#{apiId}]]></if>
+  </where>
+  <![CDATA[for update ]]>
+  </select>
 </mapper>

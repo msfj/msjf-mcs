@@ -18,7 +18,10 @@ public class Response<T> implements Serializable {
         flag = RespFlagEnum.SUCCESS.getCode();
         return this;
     }
-
+    public Response success(String msg) {
+        this.msg = msg;
+        return success();
+    }
     public Response success(T data) {
         this.data = data;
         return success();

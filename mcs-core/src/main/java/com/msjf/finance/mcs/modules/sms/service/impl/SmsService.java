@@ -3,13 +3,19 @@ package com.msjf.finance.mcs.modules.sms.service.impl;
 
 import com.google.common.collect.Maps;
 import com.msjf.finance.mcs.common.response.Response;
+import com.msjf.finance.mcs.modules.sms.dao.SpmMessageEntityMapper;
+import com.msjf.finance.mcs.modules.sms.dao.SpmMsgTemplateEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigEntityMapper;
+import com.msjf.finance.mcs.modules.sms.dao.SysSmsConfigEntityMapper;
+import com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplateEntity;
 import com.msjf.finance.mcs.modules.sms.entity.SysSmsConfigEntity;
 import com.msjf.finance.mcs.modules.utils.CheckUtil;
 import com.msjf.finance.mcs.modules.utils.CommonUtil;
 import com.msjf.finance.mcs.modules.utils.SpringContextUtil;
+import com.msjf.finance.mcs.modules.utils.TransactionManage;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -25,6 +31,10 @@ import java.util.*;
 public class SmsService {
     @Resource
     SysParamsConfigEntityMapper sysParamsConfigMapper;
+    @Resource
+    SpmMsgTemplateEntityMapper spmMsgTemplateEntityMapper;
+    @Resource
+    SysSmsConfigEntityMapper sysSmsConfigEntityMapper;
     /**
      * 模板ID
      */
@@ -92,35 +102,36 @@ public class SmsService {
 //
 //
         //1-获取系统参数
-        String open =SpringContextUtil.getBean(CommonUtil.class).getSysConfigValue("sms_open_params_config", "sms_open_params_config");
+        CommonUtil commonUtil=SpringContextUtil.getBean("commonUtil");
+        String open =commonUtil.getSysConfigValue("sms_open_params_config", "sms_open_params_config");
         if (!("0".equals(open) || "1".equals(open))) {
 //            rs.failed("系统参数异常");
             return;
         }
 //
 //        //2-获取短信内容
-//        if (getSendSmsContent(mapParam, rs)) {
-//            return;
-//        }
-//
-//        //4-记录短信发送流水
+        if (getSendSmsContent(mapParam, rs)) {
+            return;
+        }
+
+        //4-记录短信发送流水
 //        TransactionManage transactionManage = new TransactionManage();
 //        TransactionStatus status = null;
 //        try {
 //            status = transactionManage.newTransaction();
 //            insertSpmMessage(rs);
 //            transactionManage.commit(status);
-//        } catch (WsException e) {
-//            rs.failed("记录流水失败");
+//        } catch (Exception e) {
+//            rs.fail("记录流水失败");
 //            try {
 //                transactionManage.rollback(status);
-//            } catch (WsException e1) {
-//                rs.failed("回滚失败");
-//                throw new WsRuntimeException(e);
+//            } catch (Exception e1) {
+//                rs.fail("回滚失败");
+//                throw new RuntimeException(e);
 //            }
-//            throw new WsRuntimeException(e);
+//            throw new RuntimeException(e);
 //        }
-//
+
         HashMap<String, String> outMap = Maps.newHashMap();
 //
 //        if (CommonUtil.NO.equals(open)) {
@@ -129,20 +140,19 @@ public class SmsService {
 //            outMap.put("description", "模拟发送成功");
 //            rs.successful("发送成功");
 //        }
-//        if (CommonUtil.YES.equals(open)) {
-//            //5-查询短信配置
-//            SysSmsConfigEntity sysSmsConfigEntity = checkSysSmsConfig(rs);
-//            if (sysSmsConfigEntity == null || CommonUtil.NO.equals(rs.getErrorCode())) {
-//                rs.failed(rs.getErrorMessage());
-//                outMap.put("result", "9999");
-//                outMap.put("description", "查询短信配置异常:" + rs.getErrorMessage());
+        if (CommonUtil.YES.equals(open)) {
+            //5-查询短信配置
+            SysSmsConfigEntity sysSmsConfigEntity = checkSysSmsConfig(rs);
+            if (sysSmsConfigEntity == null || CommonUtil.NO.equals(rs.getMsg())) {
+                rs.fail(rs.getMsg());
+                outMap.put("result", "9999");
+                outMap.put("description", "查询短信配置异常:" + rs.getMsg());
 //                updateSpmMessage(outMap, rs);
-//                return;
-//            }
-//            //6-发送短信
-        SysSmsConfigEntity sysSmsConfigEntity=new SysSmsConfigEntity();
-            outMap = sendSmsMessage(sysSmsConfigEntity);
-//        }
+                return;
+            }
+            //6-发送短信
+            outMap = sendSmsMessage(sysSmsConfigEntity,rs);
+        }
 //
 //        //5-更新短信发送流水
 //        updateSpmMessage(outMap, rs);
@@ -340,7 +350,7 @@ public class SmsService {
      *
      * @return outMap 发送结果数据
      */
-    private HashMap<String, String> sendSmsMessage(SysSmsConfigEntity sysSmsConfigEntity) {
+    private HashMap<String, String> sendSmsMessage(SysSmsConfigEntity sysSmsConfigEntity,Response rs) {
         HashMap<String, String> outMap = null;
         String password = sysSmsConfigEntity.getPassword();
         SmsStub.SmsResponse resp = null;
@@ -361,8 +371,8 @@ public class SmsService {
         sms0.setIn1(sysSmsConfigEntity.getAccount());//登录名
         sms0.setIn2(password);//密码
 //        sms0.setIn3(templateContent);//短信内容
-        sms0.setIn3("你好{tpl_name}恭喜{tpl_ora}注册成功{tpl_code}");//短信内容
-        sms0.setIn4("18565641675");//手机号码
+        sms0.setIn3(templateContent);//短信内容
+        sms0.setIn4(mobile);//手机号码
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         sms0.setIn5(seqNum = "000" + format.format(new Date()));
         sms0.setIn6("");
@@ -374,7 +384,7 @@ public class SmsService {
             //result=28&description=发送内容与模板不符
 //            LogUtil.info("短信发送成功===" + resp.getOut());
             outMap = URLRequest(resp.getOut());
-//            rs.successful("短信发送成功");
+            rs.success("短信发送成功");
         } catch (Exception e) {
 //            rs.failed("短信发送失败");
 //            LogUtil.info("短信发送失败" + e);
@@ -386,57 +396,55 @@ public class SmsService {
         }
         return outMap;
     }
-//
-//    /**
-//     * <pre>
-//     *     查询和检查短信配置信息
-//     * </pre>
-//     *
-//     * @param rs 结果集
-//     * @return SysSmsConfigEntity 短信配置实体
-//     */
-//    private SysSmsConfigEntity checkSysSmsConfig(IResult rs) {
-//        SysSmsConfigEntity smsConfigEntity = new SysSmsConfigEntity();
-//        smsConfigEntity.setSmsType("1");
-//        List<SysSmsConfigEntity> sysSmsConfigEntityList = PersistenceUtil.getPersistence(SysSmsConfigPersistence
-//                .class).queryEntityList(smsConfigEntity);
-//        if (sysSmsConfigEntityList == null || sysSmsConfigEntityList.size() == 0) {
+
+    /**
+     * <pre>
+     *     查询和检查短信配置信息
+     * </pre>
+     *
+     * @param rs 结果集
+     * @return SysSmsConfigEntity 短信配置实体
+     */
+    private SysSmsConfigEntity checkSysSmsConfig(Response rs) {
+        SysSmsConfigEntity smsConfigEntity = new SysSmsConfigEntity();
+        smsConfigEntity.setSmsType("1");
+        List<SysSmsConfigEntity> sysSmsConfigEntityList = sysSmsConfigEntityMapper.selectByEntity(smsConfigEntity);
+        if (CheckUtil.isNull(sysSmsConfigEntityList)) {
 //            LogUtil.info("未查询到短信配置信息===" + sysSmsConfigEntityList.toString());
-//            rs.failed("未查询到短信配置信息");
-//            return null;
-//
-//        }
-//        SysSmsConfigEntity sysSmsConfigEntity = sysSmsConfigEntityList.get(0);
-//        if (0==sysSmsConfigEntity.getStatus()) {
+            rs.fail("未查询到短信配置信息");
+            return null;
+        }
+        SysSmsConfigEntity sysSmsConfigEntity=sysSmsConfigEntityList.get(0);
+        if (0==sysSmsConfigEntity.getStatus()) {
 //            LogUtil.info("短信配置未启用===" + sysSmsConfigEntity.getStatus());
-//            rs.failed("短信配置未启用");
-//            return null;
-//        }
-//        if (CheckUtil.isNull(sysSmsConfigEntity.getUserId())) {
+            rs.fail("短信配置未启用");
+            return null;
+        }
+        if (CheckUtil.isNull(sysSmsConfigEntity.getUserId())) {
 //            LogUtil.info("企业编号编号不能为空");
-//            rs.failed("短信配置(企业编号编号不能为空)");
-//            return null;
-//
-//        }
-//        if (CheckUtil.isNull(sysSmsConfigEntity.getAccount())) {
+            rs.fail("短信配置(企业编号编号不能为空)");
+            return null;
+
+        }
+        if (CheckUtil.isNull(sysSmsConfigEntity.getAccount())) {
 //            LogUtil.info("登录名不能为空");
-//            rs.failed("短信配置(登录名不能为空)");
-//            return null;
-//        }
-//        if (CheckUtil.isNull(sysSmsConfigEntity.getPassword())) {
+            rs.fail("短信配置(登录名不能为空)");
+            return null;
+        }
+        if (CheckUtil.isNull(sysSmsConfigEntity.getPassword())) {
 //            LogUtil.info("密码不能为空");
-//            rs.failed("短信配置(密码不能为空)");
-//            return null;
-//        }
-//        if (CheckUtil.isNull(sysSmsConfigEntity.getUrl())) {
+            rs.fail("短信配置(密码不能为空)");
+            return null;
+        }
+        if (CheckUtil.isNull(sysSmsConfigEntity.getUrl())) {
 //            LogUtil.info("url不能为空");
-//            rs.failed("短信配置(url不能为空)");
-//            return null;
-//        }
-//        rs.successful("查询成功");
-//        return sysSmsConfigEntity;
-//    }
-//
+            rs.fail("短信配置(url不能为空)");
+            return null;
+        }
+        rs.success("查询成功");
+        return sysSmsConfigEntity;
+    }
+
 //    /**
 //     * 记录短信发送流水
 //     *
@@ -490,54 +498,53 @@ public class SmsService {
      * @param
      * @return
      */
-//    private boolean getSendSmsContent(HashMap<String, Object> mapParam, Response rs) {
-//        //2-获取短信模板
-//        SpmMsgTemplateEntity templateEntity = new SpmMsgTemplateEntity();
-//        templateEntity.setExchangeId(CommonUtil.YES);
-//        templateEntity.setDistributorId("100");
-//        templateEntity.setTemplateId(templateId);
-//        templateEntity.setStatus(CommonUtil.I_YES);
-//        List<SpmMsgTemplateEntity> spmMsgTemplateEntityList = PersistenceUtil.getPersistence
-//                (SpmMsgTemplatePersistence.class).queryEntityListLock(templateEntity);
-//        if (spmMsgTemplateEntityList.size() == CommonUtil.I_NO) {
+    private boolean getSendSmsContent(HashMap<String, Object> mapParam, Response rs) {
+        //2-获取短信模板
+        SpmMsgTemplateEntity templateEntity = new SpmMsgTemplateEntity();
+        templateEntity.setExchangeId(CommonUtil.YES);
+        templateEntity.setDistributorId("100");
+        templateEntity.setTemplateId(templateId);
+        templateEntity.setStatus(CommonUtil.I_YES);
+        List<SpmMsgTemplateEntity> spmMsgTemplateEntityList = spmMsgTemplateEntityMapper.selectByEntityLock(templateEntity);
+        if (spmMsgTemplateEntityList.size() == CommonUtil.I_NO) {
 //            LogUtil.info("============请检查短信模板" + templateId + "是否开启或配置============");
-//            rs.failed("请检查短信模板是否开启或配置");
-//            return true;
-//        }
-//        //3-替换短信模板关键字
-//        templateContent = spmMsgTemplateEntityList.get(0).getTemplateContent();
-//        if (CheckUtil.isNull(templateContent.trim())) {
-//            rs.failed("========短信模板为空==========");
-//            return true;
-//        }
-//        String templateKeys = spmMsgTemplateEntityList.get(0).getTemplateKeys();
-//        if (!CheckUtil.isNull(templateKeys.trim())) {
-//
-//            String[] templateKeysString = templateKeys.split(",");
-//            List<String> arrayList = Arrays.asList(templateKeysString);
-//            List<String> templateKeysList = new ArrayList<String>(arrayList);
-//
-//            for (String key : templateKeysList) {
-//                if (templateContent.indexOf(key) == -1) {
-//                    rs.failed("模板关键字" + key + "在模板中不存在");
-//                    return true;
-//                }
-//                if (CheckUtil.isNull(mapParam.get(key))) {
-//                    rs.failed("模板关键字" + key + "的值不能为空");
-//                    return true;
-//                }
-//                map.put(key, mapParam.get(key));
-////                LogUtil.info("=========key:" + key + " value:" + mapParam.get(key));
-//                templateContent = templateContent.replaceAll(key, String.valueOf(mapParam.get(key)).trim());
-//            }
-////            LogUtil.info("待处理短信内容===" + templateContent);
-//            templateContent = templateContent.replaceAll("[[{}]]", "");
-//        }
-//
-////        LogUtil.info("待发送短信内容===" + templateContent);
-//
-//        return false;
-//    }
+            rs.fail("请检查短信模板是否开启或配置");
+            return true;
+        }
+        //3-替换短信模板关键字
+        templateContent = spmMsgTemplateEntityList.get(0).getTemplateContent();
+        if (CheckUtil.isNull(templateContent.trim())) {
+            rs.fail("========短信模板为空==========");
+            return true;
+        }
+        String templateKeys = spmMsgTemplateEntityList.get(0).getTemplateKeys();
+        if (!CheckUtil.isNull(templateKeys.trim())) {
+
+            String[] templateKeysString = templateKeys.split(",");
+            List<String> arrayList = Arrays.asList(templateKeysString);
+            List<String> templateKeysList = new ArrayList<String>(arrayList);
+
+            for (String key : templateKeysList) {
+                if (templateContent.indexOf(key) == -1) {
+                    rs.fail("模板关键字" + key + "在模板中不存在");
+                    return true;
+                }
+                if (CheckUtil.isNull(mapParam.get(key))) {
+                    rs.fail("模板关键字" + key + "的值不能为空");
+                    return true;
+                }
+                map.put(key, mapParam.get(key));
+//                LogUtil.info("=========key:" + key + " value:" + mapParam.get(key));
+                templateContent = templateContent.replaceAll(key, String.valueOf(mapParam.get(key)).trim());
+            }
+//            LogUtil.info("待处理短信内容===" + templateContent);
+            templateContent = templateContent.replaceAll("[[{}]]", "");
+        }
+
+//        LogUtil.info("待发送短信内容===" + templateContent);
+
+        return false;
+    }
 
     private void getParam(HashMap<String, Object> mapParam) {
         templateId = CheckUtil.isNull(mapParam.get("templateId")) ? "" : String.valueOf(mapParam.get("templateId"));
@@ -583,12 +590,13 @@ public class SmsService {
 //
 //
     public static void main(String[] args) {
+        Response rs=new Response();
         SysSmsConfigEntity sysSmsConfigEntity=new SysSmsConfigEntity();
         sysSmsConfigEntity.setAccount("nb_msfw");
         sysSmsConfigEntity.setUserId("247058");
         sysSmsConfigEntity.setPassword("Nbsm741!+?");
         sysSmsConfigEntity.setUrl("http://ums.zj165.com:8888/sms/services/Sms?wsdl");
-        HashMap map=new SmsService().sendSmsMessage(sysSmsConfigEntity);
+        HashMap map=new SmsService().sendSmsMessage(sysSmsConfigEntity,rs);
         System.out.println(map);
     }
 

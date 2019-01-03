@@ -1,14 +1,38 @@
 package com.msjf.finance.mcs.modules.utils;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
+import com.msjf.finance.mcs.common.response.Response;
+import com.msjf.finance.mcs.modules.sms.dao.CifInviteCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigEntityMapper;
+import com.msjf.finance.mcs.modules.sms.entity.CifInviteCodeEntity;
 import com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntity;
 import com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntityKey;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-@Component
+@Component("commonUtil")
 public class CommonUtil {
+
+    /**
+     * 日期格式 yyyyMMdd
+     */
+    public static final String DATE_FMT_DATE = "yyyyMMdd";
+
+    /**
+     * 日期格式 HHmmss
+     */
+    public static final String DATE_FMT_TIME = "HHmmss";
+
+    /**
+     * 日期格式 yyyyMMddHHmmss
+     */
+    public static final String DATE_FMT_DATETIME = "yyyyMMddHHmmss";
     /**
      * 交易所编号
      */
@@ -38,8 +62,17 @@ public class CommonUtil {
      * 否
      */
     public static final Integer I_NO = 0;
+    /**
+     * 认证类型 0-服务平台注册 1-管理平台登录 2-修改密码 3-手机换绑
+     */
+    public static final String SMS_REGISTER_TYPE = "0";
+    public static final String SMS_LOGIN_TYPE = "1";
+    public static final String SMS_CHANGE_PWD_TYPE = "2";
+    public static final String SMS_CHANGE_MOBILE_TYPE = "3";
     @Resource
     SysParamsConfigEntityMapper sysParamsConfigMapper;
+    @Resource
+    CifInviteCodeEntityMapper cifInviteCodeEntityMapper;
     public String getSysConfigValue(String paramId, String paramType){
         SysParamsConfigEntityKey sysParamsConfigKey=new SysParamsConfigEntityKey();
         sysParamsConfigKey.setDistributorId(DISTRIBUTORID);
@@ -50,6 +83,65 @@ public class CommonUtil {
         return sysParamsConfig.getParamValue();
     }
 
+    /**
+     * 获取邀请码(邀请码已发送未失效时，给出提示不允许重复发送)
+     * 有且仅有一条  ismember=0 customerno(邀请者客户代码) certificateno status=0 failuretime>当前时间
+     * 有且仅有一条  ismember=1 orgcustomerno(企业客户代码) certificateno status=0 failuretime>当前时间
+     *
+     * @param customerno    企业迁入时传入邀请者客户代码，其他情况传入企业客户代码
+     * @param certificateno 受邀人证件号
+     * @param rs            返回""时无需发送邀请码
+     * @return
+     */
+    public Map<Integer,Object> getInviteCode1(final String customerno, String certificateno, final String isMember,
+                                                     Response rs) {
+        HashMap<Integer, Object> map = new HashMap<Integer, Object>();
+        if (!NO.equals(isMember) && !YES.equals(isMember)) {
+            rs.fail("isMember传入值不合法");
+            throw new RuntimeException(rs.getMsg());
+        }
+        CifInviteCodeEntity c = new CifInviteCodeEntity();
+        if (YES.equals(isMember)) {
+            c.setOrgcustomerno(customerno);
+            c.setCertificateno(certificateno);
+            c.setStatus(NO);
+        } else {
+            c.setCertificateno(certificateno);
+            c.setStatus(NO);
+        }
+
+        List<CifInviteCodeEntity> cs = cifInviteCodeEntityMapper
+                .selectByEntity(c);
+        if (CheckUtil.isNull(cs)) {
+            String invitecode1 = CommonUtil.getVerifyCode(6);
+            map.put(0, invitecode1);
+            return map;
+        }
+        CifInviteCodeEntity cc = Iterators.find(cs.iterator(), new Predicate<CifInviteCodeEntity>() {
+
+            @Override
+            public boolean apply(CifInviteCodeEntity a) {
+                String custid = "";
+                if (YES.equals(isMember)) {
+                    custid = a.getOrgcustomerno();//企业客户代码
+                } else {
+                    custid = a.getCustomerno();//邀请者客户代码
+                }
+                //是否存在未使用且未失效的邀请码
+                return customerno.equals(custid) && isMember.equals(a.getIsmember())
+                        && DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(a.getFailuretime()) <= 0;
+            }
+
+        }, null);
+        if (!CheckUtil.isNull(cc)) {
+            String invitecode2 = cc.getInvitecode();
+            map.put(1, invitecode2);
+            return map;
+        }
+        String invitecode = CommonUtil.getVerifyCode(6);
+        map.put(0, invitecode);
+        return map;
+    }
     /**
      * 获取系统参数
      *
@@ -75,4 +167,20 @@ public class CommonUtil {
 //        }
 //
 //    }
+    /**
+     * 获取指定位数的验证码
+     *
+     * @param verifySize
+     * @return
+     */
+    public static String getVerifyCode(int verifySize) {
+        String sources = "123456789";
+        int codesLen = sources.length();
+        Random rand = new Random(System.currentTimeMillis());
+        StringBuilder verifyCode = new StringBuilder(verifySize);
+        for (int i = 0; i < verifySize; i++) {
+            verifyCode.append(sources.charAt(rand.nextInt(codesLen - 1)));
+        }
+        return verifyCode.toString();
+    }
 }

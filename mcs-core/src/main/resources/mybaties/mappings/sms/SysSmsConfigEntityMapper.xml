@@ -221,4 +221,33 @@
       edit_by = #{editBy,jdbcType=VARCHAR}
     where sms_id = #{smsId,jdbcType=VARCHAR}
   </update>
+  <!--短信配置表sys_sms_config 按实体查询-->
+  <select id="selectByEntity" parameterType="com.msjf.finance.mcs.modules.sms.entity.SysSmsConfigEntity"
+          resultMap="BaseResultMap">
+    <![CDATA[
+		select
+		]]>
+        <include refid="Base_Column_List" />
+    <![CDATA[
+		from mcs.sys_sms_config
+    ]]>
+    <where>
+      <if test="exchangeId != null and exchangeId!= '' "><![CDATA[ and exchange_id=#{exchangeId}]]></if>
+      <if test="distributorId != null and distributorId!= '' "><![CDATA[ and distributor_id=#{distributorId}]]></if>
+      <if test="smsId != null and smsId!= '' "><![CDATA[ and sms_id=#{smsId}]]></if>
+      <if test="userId != null and userId!= '' "><![CDATA[ and user_id=#{userId}]]></if>
+      <if test="account != null and account!= '' "><![CDATA[ and account=#{account}]]></if>
+      <if test="password != null and password!= '' "><![CDATA[ and password=#{password}]]></if>
+      <if test="url != null and url!= '' "><![CDATA[ and url=#{url}]]></if>
+      <if test="status != null and status!= '' "><![CDATA[ and status=#{status}]]></if>
+      <if test="smsType != null and smsType!= '' "><![CDATA[ and sms_type=#{smsType}]]></if>
+      <if test="serviceProvider != null and serviceProvider!= '' "><![CDATA[ and service_provider=#{serviceProvider}]]></if>
+      <if test="ctrlParam != null and ctrlParam!= '' "><![CDATA[ and ctrl_param=#{ctrlParam}]]></if>
+      <if test="ctrlComment != null and ctrlComment!= '' "><![CDATA[ and ctrl_comment=#{ctrlComment}]]></if>
+      <if test="createDatetime != null and createDatetime!= '' "><![CDATA[ and create_datetime=#{createDatetime}]]></if>
+      <if test="createBy != null and createBy!= '' "><![CDATA[ and create_by=#{createBy}]]></if>
+      <if test="editDatetime != null and editDatetime!= '' "><![CDATA[ and edit_datetime=#{editDatetime}]]></if>
+      <if test="editBy != null and editBy!= '' "><![CDATA[ and edit_by=#{editBy}]]></if>
+    </where>
+  </select>
 </mapper>

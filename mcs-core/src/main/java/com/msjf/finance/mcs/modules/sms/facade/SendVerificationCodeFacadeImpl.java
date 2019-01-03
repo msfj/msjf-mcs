@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
-import java.util.logging.Logger;
 @Service("sendVerificationCodeFacade")
 public class SendVerificationCodeFacadeImpl implements SendVerificationCodeFacade {
     @Resource

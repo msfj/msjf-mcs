@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by 11509 on 2018/12/18.
  */
-@Service("organInfoFacade")
+@Service("OrganInfoFacadeImpl")
 public class OrganInfoFacadeImpl implements OrganInfoFacade {
     @Resource
     OrganInfoService organInfoService;

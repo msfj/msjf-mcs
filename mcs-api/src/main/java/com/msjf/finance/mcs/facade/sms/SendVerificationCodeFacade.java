@@ -8,5 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface SendVerificationCodeFacade {
+    /*
+        发动注册码和手机号码换绑
+     */
     Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam);
 }

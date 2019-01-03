@@ -103,4 +103,23 @@
     where mobile = #{mobile,jdbcType=VARCHAR}
       and verificatetype = #{verificatetype,jdbcType=VARCHAR}
   </update>
+  <!--短信验证码表aus_verificate_code 按实体查询-->
+  <select id="selectByEntity" parameterType="com.msjf.finance.mcs.modules.sms.entity.AusVerificateCodeEntity"
+          resultMap="BaseResultMap">
+    <![CDATA[
+		select
+		]]>
+    <include refid="Base_Column_List" />
+    <![CDATA[
+		from kpfsp.aus_verificate_code
+	]]>
+    <where>
+      <if test="mobile != null and mobile!= '' "><![CDATA[ and mobile=#{mobile}]]></if>
+      <if test="verificatetype != null and verificatetype!= '' "><![CDATA[ and verificatetype=#{verificatetype}]]></if>
+      <if test="status != null and status!= '' "><![CDATA[ and status=#{status}]]></if>
+      <if test="verificatecode != null and verificatecode!= '' "><![CDATA[ and verificatecode=#{verificatecode}]]></if>
+      <if test="failuretime != null and failuretime!= '' "><![CDATA[ and failuretime=#{failuretime}]]></if>
+      <if test="customerno != null and customerno!= '' "><![CDATA[ and customerno=#{customerno}]]></if>
+    </where>
+  </select>
 </mapper>
