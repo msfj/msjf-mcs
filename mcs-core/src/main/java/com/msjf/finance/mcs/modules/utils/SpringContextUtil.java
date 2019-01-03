@@ -13,6 +13,9 @@ public class SpringContextUtil implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) {
         SpringContextUtil.applicationContext = applicationContext; // NOSONAR
     }
+    public static void setApplicationContext1(ApplicationContext applicationContext) {
+        SpringContextUtil.applicationContext = applicationContext; // NOSONAR
+    }
     /**
      * 取得存储在静态变量中的ApplicationContext.
      */

@@ -196,4 +196,30 @@
       issendsms = #{issendsms,jdbcType=VARCHAR}
     where serialno = #{serialno,jdbcType=VARCHAR}
   </update>
+  <select id="selectByEntity" parameterType="com.msjf.finance.mcs.modules.sms.entity.CifInviteCodeEntity"
+          resultMap="BaseResultMap">
+    <![CDATA[
+		select
+			]]>
+    <include refid="Base_Column_List" />
+    <![CDATA[
+		from kpfsp.cif_invite_code
+	]]>
+    <where>
+      <if test="serialno != null and serialno!= '' "><![CDATA[ and serialno=#{serialno}]]></if>
+      <if test="customerno != null and customerno!= '' "><![CDATA[ and customerno=#{customerno}]]></if>
+      <if test="orgcustomerno != null and orgcustomerno!= '' "><![CDATA[ and orgcustomerno=#{orgcustomerno}]]></if>
+      <if test="certificatetype != null and certificatetype!= '' "><![CDATA[ and certificatetype=#{certificatetype}]]></if>
+      <if test="certificateno != null and certificateno!= '' "><![CDATA[ and certificateno=#{certificateno}]]></if>
+      <if test="ismember != null and ismember!= '' "><![CDATA[ and ismember=#{ismember}]]></if>
+      <if test="invitecode != null and invitecode!= '' "><![CDATA[ and invitecode=#{invitecode}]]></if>
+      <if test="status != null and status!= '' "><![CDATA[ and status=#{status}]]></if>
+      <if test="failuretime != null and failuretime!= '' "><![CDATA[ and failuretime=#{failuretime}]]></if>
+      <if test="insertdate != null and insertdate!= '' "><![CDATA[ and insertdate=#{insertdate}]]></if>
+      <if test="inserttime != null and inserttime!= '' "><![CDATA[ and inserttime=#{inserttime}]]></if>
+      <if test="updatedate != null and updatedate!= '' "><![CDATA[ and updatedate=#{updatedate}]]></if>
+      <if test="updatetime != null and updatetime!= '' "><![CDATA[ and updatetime=#{updatetime}]]></if>
+      <if test="issendsms != null and issendsms!= '' "><![CDATA[ and issendsms=#{issendsms}]]></if>
+    </where>
+  </select>
 </mapper>
