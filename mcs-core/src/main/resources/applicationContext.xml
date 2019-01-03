@@ -30,5 +30,5 @@
 	<!-- 组件加载 -->
 	<import resource="classpath*:/spring/**/*.xml"/>
 	<!--初始化调用bean的工具类-->
-	<bean id="SpringContextUtil" class="com.msjf.finance.mcs.modules.utils.SpringContextUtil" />
+	<bean id="springContextUtil" class="com.msjf.finance.mcs.modules.utils.SpringContextUtil" />
 </beans>

@@ -20,7 +20,6 @@ public class SendVerificationCodeFacadeTest extends SpringTestCase {
     protected ApplicationContext ctx;
     @Test
     public  void  queryOrganInfoList(){
-        SpringContextUtil.setApplicationContext1(ctx);
         HashMap map= Maps.newHashMap();
         map.put("verificatetype","1");
         map.put("templateId","2031012026749");
