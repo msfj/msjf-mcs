@@ -140,7 +140,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
             mapParam.put("mobile", mobile);
             mapParam.put("loginName", loginname);
 
-          SmsService api = (SmsService)SpringContextUtil.getBean("SmsServiceApi");
+          SmsService api = springContextUtil.getBean("SmsServiceApi");
             Response<List<Map>> irs = new Response();
             api.doService(mapParam, irs);
             if (!irs.checkIfSuccess()) {
