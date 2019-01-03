@@ -23,6 +23,9 @@ import java.util.Map;
 public class SendVerificationCodeImpl implements SendVerificationCodeService {
     @Resource
     AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper;
+
+    @Resource
+    SpringContextUtil springContextUtil;
     /**
      * <pre>
      *     发送短信验证码服务
@@ -113,7 +116,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
 //            rs.failed("手机号格式不正确");
             return rs;
         }
-        CommonUtil commonUtil=SpringContextUtil.getBean("commonUtil");
+        CommonUtil commonUtil=springContextUtil.getBean("commonUtil");
         //获取验证码有效时间
         String msgCodeFailureTime =commonUtil.getSysConfigValue("msgcode_failure_time", "code_failure_time");
         if (CheckUtil.isNull(msgCodeFailureTime)) {
