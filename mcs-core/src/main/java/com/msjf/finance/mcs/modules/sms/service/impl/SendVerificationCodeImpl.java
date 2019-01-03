@@ -31,7 +31,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
      *
      * @param mapParam
      */
-    public Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam ) {
+    public Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam ) throws Exception{
         Response<VerificationCodeDomain> rs=new Response();
         rs.fail();
         String mobile = CheckUtil.isNull(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
