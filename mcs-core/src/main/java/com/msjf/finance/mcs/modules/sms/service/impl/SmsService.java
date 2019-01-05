@@ -133,13 +133,13 @@ public class SmsService {
 //        }
 
         HashMap<String, String> outMap = Maps.newHashMap();
-//
-//        if (CommonUtil.NO.equals(open)) {
+
+        if (CommonUtil.NO.equals(open)) {
 //            LogUtil.info("======根据控制参数设置不发送短信" + templateId + "======");
-//            outMap.put("result", CommonUtil.NO);
-//            outMap.put("description", "模拟发送成功");
-//            rs.successful("发送成功");
-//        }
+            outMap.put("result", CommonUtil.NO);
+            outMap.put("description", "模拟发送成功");
+            rs.success("发送成功");
+        }
         if (CommonUtil.YES.equals(open)) {
             //5-查询短信配置
             SysSmsConfigEntity sysSmsConfigEntity = checkSysSmsConfig(rs);

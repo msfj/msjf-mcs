@@ -9,4 +9,6 @@ import java.util.List;
 public interface SendVerificationCodeService {
 
     Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam) throws Exception;
+
+    Response<VerificationCodeDomain>  checkVerificationCode(HashMap<String, Object> mapParam)throws Exception;
 }

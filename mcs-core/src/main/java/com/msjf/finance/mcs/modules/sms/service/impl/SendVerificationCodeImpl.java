@@ -26,6 +26,36 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
 
     @Resource
     SpringContextUtil springContextUtil;
+    @Resource
+    CommonUtil commonUtil;
+    /**
+     * 登陆名
+     */
+    private String loginName;
+    /**
+     * 手机号码
+     */
+    private String mobile;
+    /**
+     * 客户代码
+     */
+    private String customerno;
+    /**
+     * 模板id
+     */
+    private String templateId;
+    /**
+     * 校验类型
+     */
+    private String verificateType;
+    /**
+     * 原验证码
+     */
+    private String oldMsgCode;
+    /**
+     * 原手机
+     */
+    private String oldMobile;
     /**
      * <pre>
      *     发送短信验证码服务
@@ -34,21 +64,24 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
      *
      * @param mapParam
      */
+    public void getParam(HashMap<String, Object> mapParam){
+        mobile = CheckUtil.isNull(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
+
+        /** 登录账号 */
+        loginName = CheckUtil.isNull(mapParam.get("loginName")) ? "" : String.valueOf(mapParam.get("loginName"));
+        customerno = CheckUtil.isNull(mapParam.get("customerno")) ? "" : String.valueOf(mapParam.get
+                ("customerno"));
+        templateId = CheckUtil.isNull(mapParam.get("templateId")) ? "" : String.valueOf(mapParam.get
+                ("templateId"));
+        verificateType = CheckUtil.isNull(mapParam.get("verificateType")) ? "" : String.valueOf(mapParam.get
+                ("verificateType"));
+        oldMsgCode=StringUtil.valueOf(mapParam.get("oldMsgCode"));
+        oldMobile=StringUtil.valueOf(mapParam.get("oldMobile"));
+    }
     public Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam ) throws Exception{
         Response<VerificationCodeDomain> rs=new Response();
         rs.fail();
-        String mobile = CheckUtil.isNull(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
-
-        /** 登录账号 */
-        String loginname = CheckUtil.isNull(mapParam.get("loginname")) ? "" : String.valueOf(mapParam.get("loginname"));
-        String customerno = CheckUtil.isNull(mapParam.get("customerno")) ? "" : String.valueOf(mapParam.get
-                ("customerno"));
-        String templateId = CheckUtil.isNull(mapParam.get("templateId")) ? "" : String.valueOf(mapParam.get
-                ("templateId"));
-        String verificatetype = CheckUtil.isNull(mapParam.get("verificatetype")) ? "" : String.valueOf(mapParam.get
-                ("verificatetype"));
-        String oldMsgcode=StringUtil.valueOf(mapParam.get("oldmsgcode"));
-        String oldMobile=StringUtil.valueOf(mapParam.get("oldmobile"));
+        getParam(mapParam);
 //        if ( CheckUtil.isNull(customerno)) {
 //            rs.fail("客户代码不能为空");
 //            return rs;
@@ -62,7 +95,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
             return rs;
         }
         //认证类型 0-服务平台注册 1-管理平台登录 2-修改密码 3-手机换绑
-        if (CheckUtil.isNull(verificatetype)) {
+        if (CheckUtil.isNull(verificateType)) {
             rs.fail("认证类型不能为空");
             return rs;
         }
@@ -70,8 +103,8 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
          * 换绑第一次发送邀请码传customerno和mobile
          * 换绑输入新手机发送验证码customerno和mobile和oldmsgcode
          **/
-        if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificatetype)){
-            if(!CheckUtil.isNull(oldMsgcode)){
+        if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
+            if(!CheckUtil.isNull(oldMsgCode)){
                 if(CheckUtil.isNull(oldMobile)){
                     rs.fail("原手机不能为空");
                     return rs;
@@ -138,7 +171,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
             mapParam.put("symbol", "。");
             mapParam.put("templateId", templateId);
             mapParam.put("mobile", mobile);
-            mapParam.put("loginName", loginname);
+            mapParam.put("loginName", loginName);
 
           SmsService api = springContextUtil.getBean("SmsServiceApi");
             Response<List<Map>> irs = new Response();
@@ -151,7 +184,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
         //将短信验证码写入kpfsp.aus_verificate_code 表
         AusVerificateCodeEntity ausVerificateCodeEntity = new AusVerificateCodeEntity();
         ausVerificateCodeEntity.setMobile(mobile);
-        ausVerificateCodeEntity.setVerificatetype(verificatetype);
+        ausVerificateCodeEntity.setVerificatetype(verificateType);
         ausVerificateCodeEntity.setStatus(CommonUtil.NO);
         ausVerificateCodeEntity.setVerificatecode(code);
         ausVerificateCodeEntity.setCustomerno(customerno); //手机换绑时（客户为登陆状态）写入客户代码
@@ -163,7 +196,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
 
         //查询数据并检查
         AusVerificateCodeEntityKey ausVerificateCodeEntityKey=new AusVerificateCodeEntityKey();
-        ausVerificateCodeEntityKey.setVerificatetype(CommonUtil.SMS_CHANGE_MOBILE_TYPE);
+        ausVerificateCodeEntityKey.setVerificatetype(verificateType);
         ausVerificateCodeEntityKey.setMobile(mobile);
         AusVerificateCodeEntity verificateCodeEntity = ausVerificateCodeEntityMapper.selectByPrimaryKey(ausVerificateCodeEntityKey);
         if (CheckUtil.isNull(verificateCodeEntity)) {
@@ -182,6 +215,43 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
 //        map.put("seqNum", String.valueOf(irsResult.get(0).get("seqNum")));
 //        map.put("activeSeconds", msgCodeFailureTime);
 //        ResultUtil.makerSusResults(irs.getErrorMessage(), map, rs);
+        return rs;
+    }
+
+    @Override
+    public Response<VerificationCodeDomain> checkVerificationCode(HashMap<String, Object> mapParam) throws Exception {
+        Response rs=new Response();
+        rs.fail("查询失败");
+        String  mobile = CheckUtil.isNull(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
+
+        /** 登录账号 */
+        String customerno = CheckUtil.isNull(mapParam.get("customerno")) ? "" : String.valueOf(mapParam.get
+                ("customerno"));
+        String verificateType = CheckUtil.isNull(mapParam.get("verificateType")) ? "" : String.valueOf(mapParam.get
+                ("verificateType"));
+        String msgCode=StringUtil.valueOf(mapParam.get("msgCode"));
+        if(CheckUtil.isNull(verificateType)){
+            rs.fail("校验类型不能为空");
+            return rs;
+        }
+        if(CheckUtil.isNull(msgCode)){
+            rs.fail("验证码不能为空");
+            return rs;
+        }
+        if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
+            if(CheckUtil.isNull(customerno)){
+                rs.fail("客户代码不能为空");
+                return rs;
+            }
+        }
+        /**
+         * 根据不同类型去调不同的校验方式
+         */
+        if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
+            commonUtil.checkMsgCodeMoblieChange(customerno,msgCode,mobile,verificateType,false,rs);
+        }else {
+            commonUtil.checkMsgCode(msgCode,mobile,verificateType,false,rs);
+        }
         return rs;
     }
 }

@@ -3,13 +3,9 @@ package organ;
 import com.msjf.finance.cas.facade.organ.OrganInfoFacade;
 import com.msjf.finance.cas.facade.organ.domain.OrganInfoDomain;
 import com.msjf.finance.mcs.common.test.SpringTestCase;
+import com.msjf.finance.mcs.modules.utils.CommonUtil;
 import com.msjf.finance.mcs.modules.utils.SpringContextUtil;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-
-import javax.annotation.Resource;
-
 /**
  * Created by 11509 on 2018/12/18.
  */
@@ -19,13 +15,14 @@ public class OrganInfoFacadeTest   extends SpringTestCase{
 //    CustInfoFacade custInfoFacade;
 //    @Resource
 //CifCustFacade cifCustFacade;
-    @Resource
-    OrganInfoFacade organInfoFacade ;
+//    @Resource
+//    SpringContextUtil springContextUtil ;
     @Test
     public  void  queryOrganInfoList(){
-        System.out.println("--------------------------"+organInfoFacade.queryOrganInfoList(new OrganInfoDomain()));
-//        while (true){
-//
-//        }
+        CommonUtil commonUtil = SpringContextUtil.getBean("commonUtil");
+        System.out.println("**********************:"+commonUtil.toString());
+        while (true){
+
+        }
     }
 }

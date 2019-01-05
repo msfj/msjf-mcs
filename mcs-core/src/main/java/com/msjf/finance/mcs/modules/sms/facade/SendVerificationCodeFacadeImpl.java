@@ -19,6 +19,19 @@ public class SendVerificationCodeFacadeImpl implements SendVerificationCodeFacad
             rs=sendVerificationCodeService.SendRegisterVerificationCode(mapParam);
         }catch (Exception e){
             rs.fail(e.getMessage());
+            throw new RuntimeException(e.getMessage(),e);
+        }
+        return rs;
+    }
+
+    @Override
+    public Response<VerificationCodeDomain> checkVerificationCode(HashMap<String, Object> mapParam) {
+        Response rs=null;
+        try{
+            rs=sendVerificationCodeService.checkVerificationCode(mapParam);
+        }catch (Exception e){
+            rs.fail(e.getMessage());
+            throw new RuntimeException(e.getMessage(),e);
         }
         return rs;
     }

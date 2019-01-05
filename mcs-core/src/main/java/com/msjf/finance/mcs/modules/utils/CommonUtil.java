@@ -3,11 +3,10 @@ package com.msjf.finance.mcs.modules.utils;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.msjf.finance.mcs.common.response.Response;
+import com.msjf.finance.mcs.modules.sms.dao.AusVerificateCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.CifInviteCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigEntityMapper;
-import com.msjf.finance.mcs.modules.sms.entity.CifInviteCodeEntity;
-import com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntity;
-import com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntityKey;
+import com.msjf.finance.mcs.modules.sms.entity.*;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -73,6 +72,10 @@ public class CommonUtil {
     SysParamsConfigEntityMapper sysParamsConfigMapper;
     @Resource
     CifInviteCodeEntityMapper cifInviteCodeEntityMapper;
+    @Resource
+    AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper;
+    @Resource
+    SpringContextUtil springContextUtil;
     public String getSysConfigValue(String paramId, String paramType){
         SysParamsConfigEntityKey sysParamsConfigKey=new SysParamsConfigEntityKey();
         sysParamsConfigKey.setDistributorId(DISTRIBUTORID);
@@ -182,5 +185,124 @@ public class CommonUtil {
             verifyCode.append(sources.charAt(rand.nextInt(codesLen - 1)));
         }
         return verifyCode.toString();
+    }
+    /**
+     * 检查短信验证码是否正确
+     *
+     * @param msgcode         验证码
+     * @param mobile          手机号码
+     * @param verificate_type 认证类型 0-服务平台注册 1-管理平台登录
+     * @param delcode         是否删除认证记录
+     * @param rs
+     * @return
+     */
+    public boolean checkMsgCode(String msgcode, String mobile, String verificate_type, Boolean delcode,
+                                       Response rs) {
+
+        String open = getSysConfigValue("sms_open_params_config", "sms_open_params_config");
+
+        if (CommonUtil.YES.equals(open)) {
+            if (CheckUtil.checkNull(msgcode, "短信验证码", rs)) {
+                return false;
+            }
+            if (CheckUtil.checkNull(mobile, "手机号码", rs)) {
+                return false;
+            }
+            if (CheckUtil.checkNull(verificate_type, "认证类型", rs)) {
+                return false;
+            }
+            AusVerificateCodeEntityKey ausVerificateCodeEntityKey = new AusVerificateCodeEntityKey();
+            ausVerificateCodeEntityKey.setMobile(mobile);
+            ausVerificateCodeEntityKey.setVerificatetype(verificate_type);
+            AusVerificateCodeEntity ausVerificateCodeEntity = ausVerificateCodeEntityMapper.selectByPrimaryKey(ausVerificateCodeEntityKey);
+            if (CheckUtil.isNull(ausVerificateCodeEntity)) {
+                rs.fail("请先获取验证码");
+                return false;
+            }
+            if (!msgcode.equals(ausVerificateCodeEntity.getVerificatecode())) {
+                rs.fail("验证码有误");
+                return false;
+            }
+            if (!NO.equals(ausVerificateCodeEntity.getStatus())) {//0-未校验 1-已校验
+                rs.fail("验证码已校验，请勿重复使用");
+                return false;
+            }
+            if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntity.getFailuretime()) > 0) {
+                rs.fail("验证码已失效，请重新获取");
+                return false;
+            }
+            if (delcode) {
+                ausVerificateCodeEntityMapper.deleteByPrimaryKey(ausVerificateCodeEntityKey);
+            } else {
+                AusVerificateCodeEntity e = new AusVerificateCodeEntity();
+                e.setMobile(mobile);
+                e.setVerificatetype(verificate_type);
+                e.setStatus(YES);//1-已校验 0-未校验
+                ausVerificateCodeEntityMapper.updateByPrimaryKeySelective(e);
+            }
+        }
+        return true;
+    }
+    /**
+     * 检查短信验证码是否正确
+     *
+     * @param msgcode         验证码
+     * @param mobile          手机号码
+     * @param verificate_type 认证类型 3- 手机号码换绑
+     * @param delcode         是否删除认证记录
+     * @param rs
+     * @return
+     */
+    public boolean checkMsgCodeMoblieChange(String customerno,String msgcode, String mobile, String verificate_type, Boolean delcode,
+                                                   Response rs) {
+        String open =getSysConfigValue("sms_open_params_config", "sms_open_params_config");
+
+        if (CommonUtil.YES.equals(open)) {
+            if (CheckUtil.checkNull(msgcode, "短信验证码", rs)) {
+                return false;
+            }
+            if (CheckUtil.checkNull(mobile, "手机号码", rs)) {
+                return false;
+            }
+            if (CheckUtil.checkNull(verificate_type, "认证类型", rs)) {
+                return false;
+            }
+            AusVerificateCodeEntityKey ausVerificateCodeEntityKey=new AusVerificateCodeEntityKey();
+            ausVerificateCodeEntityKey.setVerificatetype(verificate_type);
+            ausVerificateCodeEntityKey.setMobile(mobile);
+            AusVerificateCodeEntity paramAusVerificateCodeEntity=new AusVerificateCodeEntity();
+            paramAusVerificateCodeEntity.setCustomerno(customerno);
+            paramAusVerificateCodeEntity.setMobile(mobile);
+            paramAusVerificateCodeEntity.setVerificatetype(verificate_type);
+            List<AusVerificateCodeEntity> ausVerificateCodeEntityList = ausVerificateCodeEntityMapper.selectByEntity(paramAusVerificateCodeEntity);
+            if (CheckUtil.isNull(ausVerificateCodeEntityList)) {
+                rs.fail("请先获取验证码");
+                return false;
+            }
+            AusVerificateCodeEntity ausVerificateCodeEntity=ausVerificateCodeEntityList.get(0);
+            if (!msgcode.equals(ausVerificateCodeEntity.getVerificatecode())) {
+                rs.fail("验证码有误");
+                return false;
+            }
+            if (!NO.equals(ausVerificateCodeEntity.getStatus())) {//0-未校验 1-已校验
+                rs.fail("验证码已校验，请勿重复使用");
+                return false;
+            }
+            if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntity.getFailuretime()) > 0) {
+                rs.fail("验证码已失效，请重新获取");
+                return false;
+            }
+            if (delcode) {
+                ausVerificateCodeEntityMapper.deleteByPrimaryKey(ausVerificateCodeEntityKey);
+            } else {
+                AusVerificateCodeEntity e = new AusVerificateCodeEntity();
+                e.setMobile(mobile);
+                e.setCustomerno(customerno);
+                e.setVerificatetype(verificate_type);
+                e.setStatus(YES);//1-已校验 0-未校验
+                ausVerificateCodeEntityMapper.updateByPrimaryKeySelective(e);
+            }
+        }
+        return true;
     }
 }

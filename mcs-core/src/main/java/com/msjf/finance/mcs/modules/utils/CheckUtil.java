@@ -1,6 +1,8 @@
 
 package com.msjf.finance.mcs.modules.utils;
 
+import com.msjf.finance.mcs.common.response.Response;
+
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URL;
@@ -14,7 +16,21 @@ public final class CheckUtil {
 
 
 
-
+    public static boolean checkNull(Object b, String errmsg, Response rs) {
+        boolean flag = true;
+        if (b != null) {
+            if (b instanceof String) {
+                String str = (String) b;
+                flag = ("").equals(str) ? true : ("null".equalsIgnoreCase(str) ? true : false);
+            } else {
+                flag = false;
+            }
+        }
+        if (flag) {
+            rs.fail(errmsg + "不能为空");
+        }
+        return flag;
+    }
     // 判断是否为空
     public static boolean isNull(Object b) {
         if (b == null) {
