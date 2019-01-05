@@ -247,10 +247,14 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
         /**
          * 根据不同类型去调不同的校验方式
          */
+        Boolean flag=false;
         if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
-            commonUtil.checkMsgCodeMoblieChange(customerno,msgCode,mobile,verificateType,false,rs);
+            flag=commonUtil.checkMsgCodeMoblieChange(customerno,msgCode,mobile,verificateType,false,rs);
         }else {
-            commonUtil.checkMsgCode(msgCode,mobile,verificateType,false,rs);
+            flag=commonUtil.checkMsgCode(msgCode,mobile,verificateType,false,rs);
+        }
+        if(flag){
+           rs.success("校验通过");
         }
         return rs;
     }

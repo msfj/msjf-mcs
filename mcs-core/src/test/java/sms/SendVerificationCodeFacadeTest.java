@@ -24,10 +24,11 @@ public class SendVerificationCodeFacadeTest extends SpringTestCase {
         map.put("verificateType","1");
         map.put("templateId","2031012026749");
         map.put("mobile","18565641675");
-        Response<VerificationCodeDomain> rs=sendVerificationCodeFacade.SendRegisterVerificationCode(map);
-        System.out.println("--------------------------"+rs);
+        map.put("msgCode","6098");
+//        Response<VerificationCodeDomain> rs=sendVerificationCodeFacade.SendRegisterVerificationCode(map);
+//        System.out.println("--------------------------"+rs);
 //        rs.getData().getSeqNum();
-//        System.out.println("--------------------------"+sendVerificationCodeFacade.checkVerificationCode(map));
+        System.out.println("--------------------------"+sendVerificationCodeFacade.checkVerificationCode(map));
 
         while (true){
 
