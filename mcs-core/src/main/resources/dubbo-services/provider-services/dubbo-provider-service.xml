@@ -11,5 +11,4 @@
 
 	<dubbo:service interface="com.msjf.finance.mcs.facade.sms.SendVerificationCodeFacade" ref="sendVerificationCodeFacade" />
 
-
 </beans>

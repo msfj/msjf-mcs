@@ -174,7 +174,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
             mapParam.put("loginName", loginName);
 
           SmsService api = springContextUtil.getBean("SmsServiceApi");
-            Response<List<Map>> irs = new Response();
+            Response<Map> irs = new Response();
             api.doService(mapParam, irs);
             if (!irs.checkIfSuccess()) {
                 rs.fail(irs);
@@ -206,10 +206,10 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
         }
 
         //返回数据
-        List<Map> irsResult =irs.getData();
+        Map irsResult =irs.getData();
         VerificationCodeDomain verificationCodeDomain=new VerificationCodeDomain();
         verificationCodeDomain.setActiveSeconds(msgCodeFailureTime);
-        verificationCodeDomain.setSeqNum(String.valueOf(irsResult.get(0).get("seqNum")));
+        verificationCodeDomain.setSeqNum(String.valueOf(irsResult.get("seqNum")));
         rs.setData(verificationCodeDomain);
 //        Map map = Maps.newHashMap();
 //        map.put("seqNum", String.valueOf(irsResult.get(0).get("seqNum")));
