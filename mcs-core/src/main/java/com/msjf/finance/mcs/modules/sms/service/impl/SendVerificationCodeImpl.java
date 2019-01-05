@@ -210,11 +210,11 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
         VerificationCodeDomain verificationCodeDomain=new VerificationCodeDomain();
         verificationCodeDomain.setActiveSeconds(msgCodeFailureTime);
         verificationCodeDomain.setSeqNum(String.valueOf(irsResult.get("seqNum")));
-        rs.setData(verificationCodeDomain);
 //        Map map = Maps.newHashMap();
 //        map.put("seqNum", String.valueOf(irsResult.get(0).get("seqNum")));
 //        map.put("activeSeconds", msgCodeFailureTime);
 //        ResultUtil.makerSusResults(irs.getErrorMessage(), map, rs);
+        rs.success(verificationCodeDomain);
         return rs;
     }
 
