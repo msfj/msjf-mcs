@@ -24,8 +24,8 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
     @Resource
     AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper;
 
-    @Resource
-    SpringContextUtil springContextUtil;
+//    @Resource
+//    SpringContextUtil springContextUtil;
     @Resource
     CommonUtil commonUtil;
     /**
@@ -149,7 +149,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
 //            rs.failed("手机号格式不正确");
             return rs;
         }
-        CommonUtil commonUtil=springContextUtil.getBean("commonUtil");
+        CommonUtil commonUtil=SpringContextUtil.getBean("commonUtil");
         //获取验证码有效时间
         String msgCodeFailureTime =commonUtil.getSysConfigValue("msgcode_failure_time", "code_failure_time");
         if (CheckUtil.isNull(msgCodeFailureTime)) {
@@ -173,7 +173,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
             mapParam.put("mobile", mobile);
             mapParam.put("loginName", loginName);
 
-          SmsService api = springContextUtil.getBean("SmsServiceApi");
+          SmsService api = SpringContextUtil.getBean("SmsServiceApi");
             Response<Map> irs = new Response();
             api.doService(mapParam, irs);
             if (!irs.checkIfSuccess()) {

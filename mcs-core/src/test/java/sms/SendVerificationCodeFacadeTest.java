@@ -22,10 +22,10 @@ public class SendVerificationCodeFacadeTest extends SpringTestCase {
     public  void  queryOrganInfoList(){
         HashMap map= Maps.newHashMap();
         map.put("verificateType","1");
-        map.put("templateId","2031012026749");
+        //map.put("templateId","2031012026749");
         map.put("mobile","18565641675");
         map.put("msgCode","6098");
-//        Response<VerificationCodeDomain> rs=sendVerificationCodeFacade.SendRegisterVerificationCode(map);
+        Response<VerificationCodeDomain> rs=sendVerificationCodeFacade.SendRegisterVerificationCode(map);
 //        System.out.println("--------------------------"+rs);
 //        rs.getData().getSeqNum();
         System.out.println("--------------------------"+sendVerificationCodeFacade.checkVerificationCode(map));
