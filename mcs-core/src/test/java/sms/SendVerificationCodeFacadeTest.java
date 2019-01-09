@@ -30,9 +30,6 @@ public class SendVerificationCodeFacadeTest extends SpringTestCase {
 //        rs.getData().getSeqNum();
         System.out.println("--------------------------"+sendVerificationCodeFacade.checkVerificationCode(map));
 
-        while (true){
-
-        }
     }
 }
 

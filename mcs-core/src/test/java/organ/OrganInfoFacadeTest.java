@@ -21,8 +21,5 @@ public class OrganInfoFacadeTest   extends SpringTestCase{
     public  void  queryOrganInfoList(){
         CommonUtil commonUtil = SpringContextUtil.getBean("commonUtil");
         System.out.println("**********************:"+commonUtil.toString());
-        while (true){
-
-        }
     }
 }
