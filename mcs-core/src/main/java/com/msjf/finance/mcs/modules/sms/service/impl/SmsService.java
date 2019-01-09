@@ -7,12 +7,12 @@ import com.msjf.finance.mcs.modules.sms.dao.SpmMessageEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SpmMsgTemplateEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysSmsConfigEntityMapper;
+import com.msjf.finance.mcs.modules.sms.entity.SpmMessageEntity;
+import com.msjf.finance.mcs.modules.sms.entity.SpmMessageEntityWithBLOBs;
 import com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplateEntity;
 import com.msjf.finance.mcs.modules.sms.entity.SysSmsConfigEntity;
-import com.msjf.finance.mcs.modules.utils.CheckUtil;
-import com.msjf.finance.mcs.modules.utils.CommonUtil;
-import com.msjf.finance.mcs.modules.utils.SpringContextUtil;
-import com.msjf.finance.mcs.modules.utils.TransactionManage;
+import com.msjf.finance.mcs.modules.utils.*;
+import com.xiaoleilu.hutool.json.JSONUtil;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -35,6 +35,8 @@ public class SmsService {
     SpmMsgTemplateEntityMapper spmMsgTemplateEntityMapper;
     @Resource
     SysSmsConfigEntityMapper sysSmsConfigEntityMapper;
+    @Resource
+    SpmMessageEntityMapper spmMessageEntityMapper;
     /**
      * 模板ID
      */
@@ -115,22 +117,22 @@ public class SmsService {
         }
 
         //4-记录短信发送流水
-//        TransactionManage transactionManage = new TransactionManage();
-//        TransactionStatus status = null;
-//        try {
-//            status = transactionManage.newTransaction();
-//            insertSpmMessage(rs);
-//            transactionManage.commit(status);
-//        } catch (Exception e) {
-//            rs.fail("记录流水失败");
-//            try {
-//                transactionManage.rollback(status);
-//            } catch (Exception e1) {
-//                rs.fail("回滚失败");
-//                throw new RuntimeException(e);
-//            }
-//            throw new RuntimeException(e);
-//        }
+        TransactionManage transactionManage = new TransactionManage();
+        TransactionStatus status = null;
+        try {
+            status = transactionManage.newTransaction();
+            insertSpmMessage(rs);
+            transactionManage.commit(status);
+        } catch (Exception e) {
+            rs.fail("记录流水失败");
+            try {
+                transactionManage.rollback(status);
+            } catch (Exception e1) {
+                rs.fail("回滚失败");
+                throw new RuntimeException(e);
+            }
+            throw new RuntimeException(e);
+        }
 
         HashMap<String, String> outMap = Maps.newHashMap();
 
@@ -303,44 +305,43 @@ public class SmsService {
 //        }
 //        return true;
 //    }
-//
-//    /**
-//     * <pre>
-//     *     更新短信流水表
-//     * </pre>
-//     *
-//     * @param outMap 短信发生结果
-//     */
-//    private void updateSpmMessage(HashMap<String, String> outMap, IResult rs) {
-//        SpmMessageEntity spmMessageEntity = new SpmMessageEntity();
-//        spmMessageEntity.setSeqNum(seqNum);
-//        if (CommonUtil.NO.equals(outMap.get("result"))) {
-//            spmMessageEntity.setSendnotestatus(CommonUtil.YES);
-//        }
-//        spmMessageEntity.setSendnotestatus(CommonUtil.NO);
-//        spmMessageEntity.setSendnotereply(JsonUtil.toJson(outMap));
-//
-//        TransactionManage transactionManage = new TransactionManage();
-//        TransactionStatus status = null;
-//
-//        try {
-//            status = transactionManage.newTransaction();
-//            PersistenceUtil.getPersistence(SpmMessagePersistence.class).update(spmMessageEntity);
-//            transactionManage.commit(status);
-//        } catch (WsException e) {
-//            try {
-//                transactionManage.rollback(status);
-//            } catch (WsException e1) {
+
+    /**
+     * <pre>
+     *     更新短信流水表
+     * </pre>
+     *
+     * @param outMap 短信发生结果
+     */
+    private void updateSpmMessage(HashMap<String, String> outMap, Response rs) {
+        SpmMessageEntityWithBLOBs spmMessageEntity = new SpmMessageEntityWithBLOBs();
+        spmMessageEntity.setSeqNum(seqNum);
+        if (CommonUtil.NO.equals(outMap.get("result"))) {
+            spmMessageEntity.setSendnotestatus(CommonUtil.YES);
+        }
+        spmMessageEntity.setSendnotestatus(CommonUtil.NO);
+        spmMessageEntity.setSendnotereply(JSONUtil.toJsonStr(JSONUtil.parseFromMap(outMap)));
+        TransactionManage transactionManage = new TransactionManage();
+        TransactionStatus status = null;
+
+        try {
+            status = transactionManage.newTransaction();
+            spmMessageEntityMapper.updateByPrimaryKeySelective(spmMessageEntity);
+            transactionManage.commit(status);
+        } catch (Exception e) {
+            try {
+                transactionManage.rollback(status);
+            } catch (Exception e1) {
 //                LogUtil.info("流水更新失败,回滚失败");
-//                throw new WsRuntimeException(e1);
-//            }
-//            rs.failed("");
+                throw new RuntimeException(e1);
+            }
+            rs.fail("");
 //            LogUtil.info("流水更新失败");
-//            throw new WsRuntimeException(e);
-//        }
-//        //rs.successful("更新成功");
-//    }
-//
+            throw new RuntimeException(e);
+        }
+        //rs.successful("更新成功");
+    }
+
     /**
      * <pre>
      *     短信发送
@@ -445,50 +446,50 @@ public class SmsService {
         return sysSmsConfigEntity;
     }
 
-//    /**
-//     * 记录短信发送流水
-//     *
-//     * @return SpmMessageEntity 流水实体
-//     */
-//    private void insertSpmMessage(IResult rs) {
-//        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-//        seqNum = "000" + format.format(new Date());
-//        map.put("seqNum", seqNum);
-//        map.put("templateId", templateId);
-//        map.put("mobile", mobile);
-//
-//        SpmMessageEntity spmMessageEntity = new SpmMessageEntity();
-//        spmMessageEntity.setSeqNum(seqNum);
-//        spmMessageEntity.setTitle("短信发送");
-//        spmMessageEntity.setMobilephone(mobile);
-//        spmMessageEntity.setCustomerno("");
-//        spmMessageEntity.setMessagecontent(templateContent);
-//        spmMessageEntity.setSendchanel("2");
-//        spmMessageEntity.setSenddisplay("0");
-//        spmMessageEntity.setMessageRemark("");
-//        spmMessageEntity.setSenddate(DateUtil.getUserDate("yyyyMMddHHmmss"));
-//        spmMessageEntity.setSendnotestatus("");
-//        spmMessageEntity.setMessageparam(JsonUtil.toJson(map));
-//
-//        TransactionManage transactionManage = new TransactionManage();
-//        TransactionStatus status = null;
-//        try {
-//            status = transactionManage.newTransaction();
-//            PersistenceUtil.getPersistence(SpmMessagePersistence.class).insert(spmMessageEntity);
-//            transactionManage.commit(status);
-//        } catch (WsException e) {
-//            try {
-//                transactionManage.rollback(status);
-//            } catch (WsException e1) {
-//                rs.failed("记录流水失败,回滚流水失败");
-//                throw new WsRuntimeException(e);
-//            }
-//            rs.failed("记录流水失败");
-//            throw new WsRuntimeException(e);
-//        }
-//        rs.successful("保存成功");
-//    }
-//
+    /**
+     * 记录短信发送流水
+     *
+     * @return SpmMessageEntity 流水实体
+     */
+    private void insertSpmMessage(Response rs) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        seqNum = "000" + format.format(new Date());
+        map.put("seqNum", seqNum);
+        map.put("templateId", templateId);
+        map.put("mobile", mobile);
+
+        SpmMessageEntityWithBLOBs spmMessageEntity = new SpmMessageEntityWithBLOBs();
+        spmMessageEntity.setSeqNum(seqNum);
+        spmMessageEntity.setTitle("短信发送");
+        spmMessageEntity.setMobilephone(mobile);
+        spmMessageEntity.setCustomerno("");
+        spmMessageEntity.setMessagecontent(templateContent);
+        spmMessageEntity.setSendchanel("2");
+        spmMessageEntity.setSenddisplay("0");
+        spmMessageEntity.setMessageRemark("");
+        spmMessageEntity.setSenddate(DateUtil.getUserDate("yyyyMMddHHmmss"));
+        spmMessageEntity.setSendnotestatus("");
+        spmMessageEntity.setMessageparam(JSONUtil.toJsonStr(JSONUtil.parseFromMap(map)));
+
+        TransactionManage transactionManage = new TransactionManage();
+        TransactionStatus status = null;
+        try {
+            status = transactionManage.newTransaction();
+            spmMessageEntityMapper.insert(spmMessageEntity);
+            transactionManage.commit(status);
+        } catch (Exception e) {
+            try {
+                transactionManage.rollback(status);
+            } catch (Exception e1) {
+                rs.fail("记录流水失败,回滚流水失败");
+                throw new RuntimeException(e);
+            }
+            rs.fail("记录流水失败");
+            throw new RuntimeException(e);
+        }
+        rs.success("保存成功");
+    }
+
     /**
      * <pre>
      *     获取短信模板中的内容,并替换关键字和检查关键字是否存在

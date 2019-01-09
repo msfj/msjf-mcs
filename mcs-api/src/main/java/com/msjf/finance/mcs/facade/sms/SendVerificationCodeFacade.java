@@ -16,4 +16,11 @@ public interface SendVerificationCodeFacade {
        验证手机号码是否正确
      */
     Response<VerificationCodeDomain>  checkVerificationCode(HashMap<String, Object> mapParam);
+
+    /**
+     * 校验验证码是否已经验证通过
+     * @param mapParam
+     * @return
+     */
+    Response<VerificationCodeDomain>  isExistVerificationCode(HashMap<String, Object> mapParam);
 }

@@ -35,4 +35,16 @@ public class SendVerificationCodeFacadeImpl implements SendVerificationCodeFacad
         }
         return rs;
     }
+
+    @Override
+    public Response<VerificationCodeDomain> isExistVerificationCode(HashMap<String, Object> mapParam) {
+        Response rs=null;
+        try{
+            rs=sendVerificationCodeService.isExistVerificationCode(mapParam);
+        }catch (Exception e){
+            rs.fail(e.getMessage());
+            throw new RuntimeException(e.getMessage(),e);
+        }
+        return rs;
+    }
 }

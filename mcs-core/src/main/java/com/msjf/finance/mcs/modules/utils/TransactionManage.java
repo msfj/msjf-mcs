@@ -44,4 +44,14 @@ public class TransactionManage {
             throw new Exception("手动提交事务失败");
         }
     }
+    public void rollback(TransactionStatus status) throws Exception {
+        PlatformTransactionManager transactionManager = getTransactionManager();
+        try {
+            transactionManager.rollback(status);
+            status.flush();
+        } catch (Exception e) {
+//            LogUtil.error("手动提交事务失败");
+            throw new Exception("手动提交事务失败");
+        }
+    }
 }

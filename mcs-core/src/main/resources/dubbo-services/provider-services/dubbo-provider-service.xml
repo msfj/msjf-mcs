@@ -7,7 +7,7 @@
 
 <!--	<dubbo:service interface="com.msjf.finance.mcs.facade.organ.OrganInfoFacade" ref="organInfoFacade" />-->
 
-	<dubbo:service interface="com.msjf.finance.mcs.facade.organ.CifCustFacade" ref="cifCustFacade" />
+	<!--<dubbo:service interface="com.msjf.finance.mcs.facade.organ.CifCustFacade" ref="cifCustFacade" />-->
 
 	<dubbo:service interface="com.msjf.finance.mcs.facade.sms.SendVerificationCodeFacade" ref="sendVerificationCodeFacade" />
 
