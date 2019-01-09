@@ -57,6 +57,10 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
      */
     private String oldMobile;
     /**
+     * 验证码
+     */
+    private String msgCode;
+    /**
      * <pre>
      *     发送短信验证码服务
      *     入参必须有手机号和模板ID
@@ -78,7 +82,7 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
         oldMsgCode=StringUtil.valueOf(mapParam.get("oldMsgCode"));
         oldMobile=StringUtil.valueOf(mapParam.get("oldMobile"));
     }
-    public Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam ) throws Exception{
+    public Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam ){
         Response<VerificationCodeDomain> rs=new Response();
         rs.fail();
         getParam(mapParam);
@@ -219,31 +223,19 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
     }
 
     @Override
-    public Response<VerificationCodeDomain> checkVerificationCode(HashMap<String, Object> mapParam) throws Exception {
+    public Response<VerificationCodeDomain> checkVerificationCode(HashMap<String, Object> mapParam){
         Response rs=new Response();
         rs.fail("查询失败");
-        String  mobile = CheckUtil.isNull(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
+        mobile = CheckUtil.isNull(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
 
         /** 登录账号 */
-        String customerno = CheckUtil.isNull(mapParam.get("customerno")) ? "" : String.valueOf(mapParam.get
+        customerno = CheckUtil.isNull(mapParam.get("customerno")) ? "" : String.valueOf(mapParam.get
                 ("customerno"));
-        String verificateType = CheckUtil.isNull(mapParam.get("verificateType")) ? "" : String.valueOf(mapParam.get
+        verificateType = CheckUtil.isNull(mapParam.get("verificateType")) ? "" : String.valueOf(mapParam.get
                 ("verificateType"));
-        String msgCode=StringUtil.valueOf(mapParam.get("msgCode"));
-        if(CheckUtil.isNull(verificateType)){
-            rs.fail("校验类型不能为空");
-            return rs;
-        }
-        if(CheckUtil.isNull(msgCode)){
-            rs.fail("验证码不能为空");
-            return rs;
-        }
-        if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
-            if(CheckUtil.isNull(customerno)){
-                rs.fail("客户代码不能为空");
-                return rs;
-            }
-        }
+        msgCode=StringUtil.valueOf(mapParam.get("msgCode"));
+
+        checkIsExist(rs);
         /**
          * 根据不同类型去调不同的校验方式
          */
@@ -258,4 +250,48 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
         }
         return rs;
     }
+    public Boolean checkIsExist(Response rs){
+        if(CheckUtil.isNull(verificateType)){
+            rs.fail("校验类型不能为空");
+            return false;
+        }
+        if(CheckUtil.isNull(msgCode)){
+            rs.fail("验证码不能为空");
+            return false;
+        }
+        if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
+            if(CheckUtil.isNull(customerno)){
+                rs.fail("客户代码不能为空");
+                return false;
+            }
+        }
+        return true;
+    }
+    @Override
+    public Response<VerificationCodeDomain> isExistVerificationCode(HashMap<String, Object> mapParam) {
+        Response<VerificationCodeDomain> rs=new Response();
+        getParam(mapParam);
+        checkIsExist(rs);
+        List<AusVerificateCodeEntity> ausVerificateCodeEntityList=null;
+        if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
+            AusVerificateCodeEntity ausVerificateCodeEntity=new AusVerificateCodeEntity();
+            ausVerificateCodeEntity.setCustomerno(customerno);
+            ausVerificateCodeEntity.setVerificatecode(msgCode);
+            ausVerificateCodeEntity.setVerificatetype(verificateType);
+            ausVerificateCodeEntity.setMobile(mobile);
+            ausVerificateCodeEntityList=ausVerificateCodeEntityMapper.selectByEntity(ausVerificateCodeEntity);
+        }else{
+            AusVerificateCodeEntity ausVerificateCodeEntity=new AusVerificateCodeEntity();
+            ausVerificateCodeEntity.setVerificatecode(msgCode);
+            ausVerificateCodeEntity.setVerificatetype(verificateType);
+            ausVerificateCodeEntity.setMobile(mobile);
+            ausVerificateCodeEntityList=ausVerificateCodeEntityMapper.selectByEntity(ausVerificateCodeEntity);
+        }
+        if(CheckUtil.isNull(ausVerificateCodeEntityList)){
+            rs.fail("校验码不存在");
+        }
+        rs.success("校验成功");
+        return rs;
+    }
+
 }
