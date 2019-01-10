@@ -24,8 +24,8 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
     @Resource
     AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper;
 
-//    @Resource
-//    SpringContextUtil springContextUtil;
+    @Resource
+    SpringContextUtil springContextUtil;
     @Resource
     CommonUtil commonUtil;
     /**
