@@ -74,15 +74,14 @@ public class CommonUtil {
     CifInviteCodeEntityMapper cifInviteCodeEntityMapper;
     @Resource
     AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper;
-    @Resource
-    SpringContextUtil springContextUtil;
-    public String getSysConfigValue(String paramId, String paramType){
+    public static String getSysConfigValue(String paramId, String paramType){
         SysParamsConfigEntityKey sysParamsConfigKey=new SysParamsConfigEntityKey();
         sysParamsConfigKey.setDistributorId(DISTRIBUTORID);
         sysParamsConfigKey.setExchangeId(EXCHANGEID);
         sysParamsConfigKey.setParamId(paramId);
         sysParamsConfigKey.setParamType(paramType);
-        SysParamsConfigEntity sysParamsConfig=sysParamsConfigMapper.selectByPrimaryKey(sysParamsConfigKey);
+        SysParamsConfigEntityMapper sysParamsConfigEntityMapper=SpringContextUtil.getBean("sysParamsConfigEntityMapper");
+        SysParamsConfigEntity sysParamsConfig=sysParamsConfigEntityMapper.selectByPrimaryKey(sysParamsConfigKey);
         return sysParamsConfig.getParamValue();
     }
 
