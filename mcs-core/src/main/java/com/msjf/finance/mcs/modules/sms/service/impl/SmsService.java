@@ -149,16 +149,16 @@ public class SmsService {
                 rs.fail(rs.getMsg());
                 outMap.put("result", "9999");
                 outMap.put("description", "查询短信配置异常:" + rs.getMsg());
-//                updateSpmMessage(outMap, rs);
+                updateSpmMessage(outMap, rs);
                 return;
             }
             //6-发送短信
             outMap = sendSmsMessage(sysSmsConfigEntity,rs);
         }
-//
-//        //5-更新短信发送流水
-//        updateSpmMessage(outMap, rs);
-//
+
+        //5-更新短信发送流水
+        updateSpmMessage(outMap, rs);
+
         if (CommonUtil.NO.equals(outMap.get("result"))) {
             Map map = Maps.newHashMap();
             map.put("seqNum", seqNum);
@@ -371,11 +371,9 @@ public class SmsService {
         sms0.setIn0(sysSmsConfigEntity.getUserId());//企业编号
         sms0.setIn1(sysSmsConfigEntity.getAccount());//登录名
         sms0.setIn2(password);//密码
-//        sms0.setIn3(templateContent);//短信内容
         sms0.setIn3(templateContent);//短信内容
         sms0.setIn4(mobile);//手机号码
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        sms0.setIn5(seqNum = "000" + format.format(new Date()));
+        sms0.setIn5(seqNum);
         sms0.setIn6("");
         sms0.setIn7("1");
         sms0.setIn8("");
