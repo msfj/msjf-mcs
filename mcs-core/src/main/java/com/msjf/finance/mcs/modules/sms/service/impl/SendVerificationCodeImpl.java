@@ -2,6 +2,7 @@ package com.msjf.finance.mcs.modules.sms.service.impl;
 
 import com.msjf.finance.mcs.common.response.Response;
 import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
+import com.msjf.finance.mcs.modules.Message;
 import com.msjf.finance.mcs.modules.sms.dao.AusVerificateCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.entity.AusVerificateCodeEntity;
 import com.msjf.finance.mcs.modules.sms.entity.AusVerificateCodeEntityKey;
@@ -20,7 +21,7 @@ import java.util.Map;
 
 @Service("sendVerificationCodeImpl")
 @Scope("prototype")
-public class SendVerificationCodeImpl implements SendVerificationCodeService {
+public class SendVerificationCodeImpl extends Message implements SendVerificationCodeService {
     @Resource
     AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper;
     @Resource
@@ -130,7 +131,10 @@ public class SendVerificationCodeImpl implements SendVerificationCodeService {
                     return rs;
                 }
             }else{
-
+                if(CheckUtil.isNull(customerno)){
+                    rs.fail("客户代码不能为空");
+                    return rs;
+                }
             }
         }
 //        if (CheckUtil.isNull(mobile)) {

@@ -1,10 +1,35 @@
 package com.msjf.finance.mcs.modules.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SpringContextUtil implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
+
+    protected static final Logger logger = LoggerFactory.getLogger(SpringContextUtil.class);
+    static {
+        if (SpringContextUtil.applicationContext == null) {
+            initApplicationContext();
+        }
+    }
+    public synchronized static void initApplicationContext() {
+        initApplicationContext("classpath:/applicationContext.xml");
+    }
+
+    public synchronized static void initApplicationContext(String configLocation) {
+        if (SpringContextUtil.applicationContext == null) {
+            logger.debug("Init application context from {}", configLocation);
+            setContext(new ClassPathXmlApplicationContext(configLocation));
+        }
+    }
+    public synchronized static void setContext(ApplicationContext context) {
+        SpringContextUtil.applicationContext = context;
+    }
 
     /**
      * 实现ApplicationContextAware接口的context注入函数, 将其存入静态变量.

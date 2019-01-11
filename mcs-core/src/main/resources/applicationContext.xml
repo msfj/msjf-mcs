@@ -15,8 +15,7 @@
 	   default-lazy-init="true">
 
 	<description>Loan App Configuration</description>
-
-	<!-- 加载资源文件 -->
+    <!-- 加载资源文件 -->
 	<context:property-placeholder
 			location="classpath*:/properties/*.properties" />
 
@@ -29,6 +28,4 @@
 	</context:component-scan>
 	<!-- 组件加载 -->
 	<import resource="classpath*:/spring/**/*.xml"/>
-	<!--初始化调用bean的工具类-->
-	<bean id="springContextUtil" class="com.msjf.finance.mcs.modules.utils.SpringContextUtil" />
 </beans>

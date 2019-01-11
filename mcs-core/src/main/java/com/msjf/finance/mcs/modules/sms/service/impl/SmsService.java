@@ -3,6 +3,7 @@ package com.msjf.finance.mcs.modules.sms.service.impl;
 
 import com.google.common.collect.Maps;
 import com.msjf.finance.mcs.common.response.Response;
+import com.msjf.finance.mcs.modules.Message;
 import com.msjf.finance.mcs.modules.sms.dao.SpmMessageEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SpmMsgTemplateEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigEntityMapper;
@@ -28,7 +29,7 @@ import java.util.*;
  */
 @Scope("prototype")
 @Service("SmsServiceApi")
-public class SmsService {
+public class SmsService extends Message {
     @Resource
     SysParamsConfigEntityMapper sysParamsConfigMapper;
     @Resource
@@ -88,12 +89,12 @@ public class SmsService {
 //
 //
         if (CheckUtil.isNull(templateId)) {
-            //rs.failed("模板ID不能为空");
+            rs.fail("模板ID不能为空");
             return;
         }
 //
         if (CheckUtil.isNull(mobile)) {
-            //rs.failed("手机号不能为空");
+            rs.fail("手机号不能为空");
             return;
         }
 //
@@ -107,7 +108,7 @@ public class SmsService {
         CommonUtil commonUtil=SpringContextUtil.getBean("commonUtil");
         String open =commonUtil.getSysConfigValue("sms_open_params_config", "sms_open_params_config");
         if (!("0".equals(open) || "1".equals(open))) {
-//            rs.failed("系统参数异常");
+            rs.fail("系统参数异常");
             return;
         }
 //
@@ -385,7 +386,7 @@ public class SmsService {
             outMap = URLRequest(resp.getOut());
             rs.success("短信发送成功");
         } catch (Exception e) {
-//            rs.failed("短信发送失败");
+            rs.fail("短信发送失败");
 //            LogUtil.info("短信发送失败" + e);
 //            com.websuites.utils.LogUtil.debug("短信发送失败" + e);
             outMap.put("result", "999");

@@ -74,8 +74,8 @@ public class CommonUtil {
     CifInviteCodeEntityMapper cifInviteCodeEntityMapper;
     @Resource
     AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper;
-    @Resource
-    SpringContextUtil springContextUtil;
+//    @Resource
+//    SpringContextUtil springContextUtil;
     public static String getSysConfigValue(String paramId, String paramType){
         SysParamsConfigEntityKey sysParamsConfigKey=new SysParamsConfigEntityKey();
         sysParamsConfigKey.setDistributorId(DISTRIBUTORID);
