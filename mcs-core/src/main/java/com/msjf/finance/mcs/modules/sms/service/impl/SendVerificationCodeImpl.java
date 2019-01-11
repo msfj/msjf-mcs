@@ -236,7 +236,9 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
                 ("verificateType"));
         msgCode=StringUtil.valueOf(mapParam.get("msgCode"));
 
-        checkIsExist(rs);
+        if(!checkIsExist(rs)){
+            return rs;
+        }
         /**
          * 根据不同类型去调不同的校验方式
          */
@@ -258,6 +260,10 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
         }
         if(CheckUtil.isNull(msgCode)){
             rs.fail("验证码不能为空");
+            return false;
+        }
+        if(CheckUtil.isNull(mobile)){
+            rs.fail("手机号码不能为空");
             return false;
         }
         if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
