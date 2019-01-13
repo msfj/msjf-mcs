@@ -1,9 +1,10 @@
 package com.msjf.finance.mcs.modules.sms.facade;
 
-import com.msjf.finance.mcs.common.response.Response;
 import com.msjf.finance.mcs.facade.sms.SendVerificationCodeFacade;
 import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
+import com.msjf.finance.mcs.modules.sms.emun.SendVerificationCodeEnum;
 import com.msjf.finance.mcs.modules.sms.service.SendVerificationCodeService;
+import com.msjf.finance.msjf.core.response.Response;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -14,37 +15,28 @@ public class SendVerificationCodeFacadeImpl implements SendVerificationCodeFacad
     SendVerificationCodeService sendVerificationCodeService;
     @Override
     public Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam) {
-        Response rs=null;
         try{
-            rs=sendVerificationCodeService.SendRegisterVerificationCode(mapParam);
+            return sendVerificationCodeService.SendRegisterVerificationCode(mapParam);
         }catch (Exception e){
-            rs.fail(e.getMessage());
-            throw new RuntimeException(e.getMessage(),e);
+            return new Response<>().fail(SendVerificationCodeEnum.MSG_SEND_EXCEPTION);
         }
-        return rs;
     }
 
     @Override
     public Response<VerificationCodeDomain> checkVerificationCode(HashMap<String, Object> mapParam) {
-        Response rs=null;
         try{
-            rs=sendVerificationCodeService.checkVerificationCode(mapParam);
+           return sendVerificationCodeService.checkVerificationCode(mapParam);
         }catch (Exception e){
-            rs.fail(e.getMessage());
-            throw new RuntimeException(e.getMessage(),e);
+            return new Response<>().fail(SendVerificationCodeEnum.MSG_CHECK_EXCEPTION);
         }
-        return rs;
     }
 
     @Override
     public Response<VerificationCodeDomain> isExistVerificationCode(HashMap<String, Object> mapParam) {
-        Response rs=null;
         try{
-            rs=sendVerificationCodeService.isExistVerificationCode(mapParam);
+            return sendVerificationCodeService.isExistVerificationCode(mapParam);
         }catch (Exception e){
-            rs.fail(e.getMessage());
-            throw new RuntimeException(e.getMessage(),e);
+            return new Response<>().fail(SendVerificationCodeEnum.MSG_CHECK_EXCEPTION);
         }
-        return rs;
     }
 }

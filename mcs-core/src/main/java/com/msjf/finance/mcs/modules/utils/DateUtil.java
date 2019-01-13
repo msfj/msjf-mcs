@@ -1,7 +1,7 @@
 package com.msjf.finance.mcs.modules.utils;
 
 import com.google.common.primitives.Ints;
-import com.msjf.finance.mcs.common.response.Response;
+import com.msjf.finance.msjf.core.response.Response;
 import org.apache.log4j.Logger;
 import org.springframework.format.annotation.DateTimeFormat;
 

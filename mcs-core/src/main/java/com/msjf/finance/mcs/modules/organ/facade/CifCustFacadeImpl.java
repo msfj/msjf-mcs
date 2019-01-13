@@ -1,10 +1,10 @@
 package com.msjf.finance.mcs.modules.organ.facade;
 
-import com.msjf.finance.mcs.common.response.Response;
 import com.msjf.finance.mcs.facade.organ.CifCustFacade;
 import com.msjf.finance.mcs.facade.organ.domain.CifCustDomain;
 import com.msjf.finance.mcs.facade.organ.domain.OrganInfoDomain;
 import com.msjf.finance.mcs.modules.organ.service.CifCustService;
+import com.msjf.finance.msjf.core.response.Response;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

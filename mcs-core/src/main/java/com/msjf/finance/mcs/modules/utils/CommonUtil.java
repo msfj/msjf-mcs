@@ -2,12 +2,15 @@ package com.msjf.finance.mcs.modules.utils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
-import com.msjf.finance.mcs.common.response.Response;
 import com.msjf.finance.mcs.modules.sms.dao.AusVerificateCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.CifInviteCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigEntityMapper;
 import com.msjf.finance.mcs.modules.sms.entity.*;
+import com.msjf.finance.mcs.modules.utils.emun.CommonUtilEmun;
+import com.msjf.finance.msjf.core.response.Response;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -15,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-@Component("commonUtil")
 public class CommonUtil {
 
     /**
@@ -72,8 +74,6 @@ public class CommonUtil {
     SysParamsConfigEntityMapper sysParamsConfigMapper;
     @Resource
     CifInviteCodeEntityMapper cifInviteCodeEntityMapper;
-    @Resource
-    AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper;
 //    @Resource
 //    SpringContextUtil springContextUtil;
     public static String getSysConfigValue(String paramId, String paramType){
@@ -101,7 +101,7 @@ public class CommonUtil {
                                                      Response rs) {
         HashMap<Integer, Object> map = new HashMap<Integer, Object>();
         if (!NO.equals(isMember) && !YES.equals(isMember)) {
-            rs.fail("isMember传入值不合法");
+            rs.fail(CommonUtilEmun.MSG_PARAM_ERROR);
             throw new RuntimeException(rs.getMsg());
         }
         CifInviteCodeEntity c = new CifInviteCodeEntity();
@@ -116,7 +116,7 @@ public class CommonUtil {
 
         List<CifInviteCodeEntity> cs = cifInviteCodeEntityMapper
                 .selectByEntity(c);
-        if (CheckUtil.isNull(cs)) {
+        if (ObjectUtils.isEmpty(cs)) {
             String invitecode1 = CommonUtil.getVerifyCode(6);
             map.put(0, invitecode1);
             return map;
@@ -137,7 +137,7 @@ public class CommonUtil {
             }
 
         }, null);
-        if (!CheckUtil.isNull(cc)) {
+        if (!ObjectUtils.isEmpty(cc)) {
             String invitecode2 = cc.getInvitecode();
             map.put(1, invitecode2);
             return map;
@@ -197,39 +197,43 @@ public class CommonUtil {
      * @param rs
      * @return
      */
-    public boolean checkMsgCode(String msgcode, String mobile, String verificate_type, Boolean delcode,
+    public static boolean checkMsgCode(String msgcode, String mobile, String verificate_type, Boolean delcode,
                                        Response rs) {
 
         String open = getSysConfigValue("sms_open_params_config", "sms_open_params_config");
 
         if (CommonUtil.YES.equals(open)) {
-            if (CheckUtil.checkNull(msgcode, "短信验证码", rs)) {
+            if (StringUtils.isEmpty(msgcode)) {
+                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
                 return false;
             }
-            if (CheckUtil.checkNull(mobile, "手机号码", rs)) {
+            if (StringUtils.isEmpty(mobile)) {
+                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
                 return false;
             }
-            if (CheckUtil.checkNull(verificate_type, "认证类型", rs)) {
+            if (StringUtils.isEmpty(verificate_type)) {
+                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
                 return false;
             }
             AusVerificateCodeEntityKey ausVerificateCodeEntityKey = new AusVerificateCodeEntityKey();
             ausVerificateCodeEntityKey.setMobile(mobile);
             ausVerificateCodeEntityKey.setVerificatetype(verificate_type);
+            AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper=SpringContextUtil.getBean("ausVerificateCodeEntityMapper");
             AusVerificateCodeEntity ausVerificateCodeEntity = ausVerificateCodeEntityMapper.selectByPrimaryKey(ausVerificateCodeEntityKey);
-            if (CheckUtil.isNull(ausVerificateCodeEntity)) {
-                rs.fail("请先获取验证码");
+            if (ObjectUtils.isEmpty(ausVerificateCodeEntity)) {
+                rs.fail(CommonUtilEmun.VALIDE_CODE_NULL);
                 return false;
             }
             if (!msgcode.equals(ausVerificateCodeEntity.getVerificatecode())) {
-                rs.fail("验证码有误");
+                rs.fail(CommonUtilEmun.VALIDE_CODE_ERROR);
                 return false;
             }
             if (!NO.equals(ausVerificateCodeEntity.getStatus())) {//0-未校验 1-已校验
-                rs.fail("验证码已校验，请勿重复使用");
+                rs.fail(CommonUtilEmun.VALIDE_CODE_IS_USED);
                 return false;
             }
             if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntity.getFailuretime()) > 0) {
-                rs.fail("验证码已失效，请重新获取");
+                rs.fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
                 return false;
             }
             if (delcode) {
@@ -254,18 +258,21 @@ public class CommonUtil {
      * @param rs
      * @return
      */
-    public boolean checkMsgCodeMoblieChange(String customerno,String msgcode, String mobile, String verificate_type, Boolean delcode,
+    public static boolean checkMsgCodeMoblieChange(String customerno,String msgcode, String mobile, String verificate_type, Boolean delcode,
                                                    Response rs) {
         String open =getSysConfigValue("sms_open_params_config", "sms_open_params_config");
 
         if (CommonUtil.YES.equals(open)) {
-            if (CheckUtil.checkNull(msgcode, "短信验证码", rs)) {
+            if (StringUtils.isEmpty(msgcode)) {
+                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
                 return false;
             }
-            if (CheckUtil.checkNull(mobile, "手机号码", rs)) {
+            if (StringUtils.isEmpty(mobile)) {
+                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
                 return false;
             }
-            if (CheckUtil.checkNull(verificate_type, "认证类型", rs)) {
+            if (StringUtils.isEmpty(verificate_type)) {
+                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
                 return false;
             }
             AusVerificateCodeEntityKey ausVerificateCodeEntityKey=new AusVerificateCodeEntityKey();
@@ -275,22 +282,23 @@ public class CommonUtil {
             paramAusVerificateCodeEntity.setCustomerno(customerno);
             paramAusVerificateCodeEntity.setMobile(mobile);
             paramAusVerificateCodeEntity.setVerificatetype(verificate_type);
+            AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper=SpringContextUtil.getBean("ausVerificateCodeEntityMapper");
             List<AusVerificateCodeEntity> ausVerificateCodeEntityList = ausVerificateCodeEntityMapper.selectByEntity(paramAusVerificateCodeEntity);
-            if (CheckUtil.isNull(ausVerificateCodeEntityList)) {
-                rs.fail("请先获取验证码");
+            AusVerificateCodeEntity ausVerificateCodeEntity=ausVerificateCodeEntityList.get(0);
+            if (ObjectUtils.isEmpty(ausVerificateCodeEntity)) {
+                rs.fail(CommonUtilEmun.VALIDE_CODE_NULL);
                 return false;
             }
-            AusVerificateCodeEntity ausVerificateCodeEntity=ausVerificateCodeEntityList.get(0);
             if (!msgcode.equals(ausVerificateCodeEntity.getVerificatecode())) {
-                rs.fail("验证码有误");
+                rs.fail(CommonUtilEmun.VALIDE_CODE_ERROR);
                 return false;
             }
             if (!NO.equals(ausVerificateCodeEntity.getStatus())) {//0-未校验 1-已校验
-                rs.fail("验证码已校验，请勿重复使用");
+                rs.fail(CommonUtilEmun.VALIDE_CODE_IS_USED);
                 return false;
             }
             if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntity.getFailuretime()) > 0) {
-                rs.fail("验证码已失效，请重新获取");
+                rs.fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
                 return false;
             }
             if (delcode) {

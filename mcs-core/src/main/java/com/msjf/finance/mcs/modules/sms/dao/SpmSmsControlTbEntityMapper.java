@@ -1,7 +1,8 @@
 package com.msjf.finance.mcs.modules.sms.dao;
 
-import com.msjf.finance.mcs.common.dao.MyBatisDao;
 import com.msjf.finance.mcs.modules.sms.entity.SpmSmsControlTbEntity;
+import com.msjf.finance.msjf.core.dao.MyBatisDao;
+
 @MyBatisDao
 public interface SpmSmsControlTbEntityMapper {
     int deleteByPrimaryKey(String controlKey);

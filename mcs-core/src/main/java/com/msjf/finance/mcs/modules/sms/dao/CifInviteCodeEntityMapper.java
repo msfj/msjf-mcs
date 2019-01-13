@@ -1,7 +1,7 @@
 package com.msjf.finance.mcs.modules.sms.dao;
 
-import com.msjf.finance.mcs.common.dao.MyBatisDao;
 import com.msjf.finance.mcs.modules.sms.entity.CifInviteCodeEntity;
+import com.msjf.finance.msjf.core.dao.MyBatisDao;
 
 import java.util.List;
 

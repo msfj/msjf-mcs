@@ -1,12 +1,12 @@
 package com.msjf.finance.mcs.modules.sms.service.impl;
 
-import com.msjf.finance.mcs.common.response.Response;
 import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
 import com.msjf.finance.mcs.modules.sms.SmsSend;
 import com.msjf.finance.mcs.modules.sms.dao.CifInviteCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.entity.CifInviteCodeEntity;
 import com.msjf.finance.mcs.modules.sms.service.InviteCodeService;
 import com.msjf.finance.mcs.modules.utils.*;
+import com.msjf.finance.msjf.core.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -62,7 +62,7 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
     @Override
     public Response<VerificationCodeDomain> getInviteCode(HashMap<String, Object> mapParam) {
         Response rs=new Response();
-        rs.fail("操作失败");
+        rs.fail();
         //生成并返回邀请码
         Map<Integer, Object> inviteCodeMap =  commonUtil.getInviteCode1(customerno, certificateno, CommonUtil.YES, rs);
         Set<Map.Entry<Integer, Object>> set=inviteCodeMap.entrySet();
@@ -87,7 +87,7 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
         serialno = cs.get(0).getSerialno();
         issendsms = cs.get(0).getIssendsms();
         //更新企業成員信息表
-        return null;
+        return rs;
     }
     private void getParam(HashMap<String, Object> mapParam, Response rs) {
         invitecode = StringUtil.valueOf(mapParam.get("invitecode"));

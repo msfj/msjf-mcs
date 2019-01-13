@@ -8,7 +8,7 @@ import java.util.HashMap;
 public interface InviteCodeFacade {
     /**
      * 邀请认证
-     * 生成并得到邀請碼
+     * 生成并得到邀请码
      * @param mapParam
      * @return
      */

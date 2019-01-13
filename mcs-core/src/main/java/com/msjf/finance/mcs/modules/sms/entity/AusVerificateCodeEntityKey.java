@@ -1,6 +1,6 @@
 package com.msjf.finance.mcs.modules.sms.entity;
 
-import com.msjf.finance.mcs.common.response.BaseEntity;
+import com.msjf.finance.msjf.core.entity.BaseEntity;
 
 public class AusVerificateCodeEntityKey extends BaseEntity {
     private String mobile;

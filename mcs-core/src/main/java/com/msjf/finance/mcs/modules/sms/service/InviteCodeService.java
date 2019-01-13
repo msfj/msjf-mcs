@@ -1,7 +1,7 @@
 package com.msjf.finance.mcs.modules.sms.service;
 
-import com.msjf.finance.mcs.common.response.Response;
 import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
+import com.msjf.finance.msjf.core.response.Response;
 
 import java.util.HashMap;
 

@@ -1,8 +1,9 @@
 package com.msjf.finance.mcs.modules.sms.dao;
 
-import com.msjf.finance.mcs.common.dao.MyBatisDao;
 import com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntity;
 import com.msjf.finance.mcs.modules.sms.entity.SysParamsConfigEntityKey;
+import com.msjf.finance.msjf.core.dao.MyBatisDao;
+
 @MyBatisDao
 public interface SysParamsConfigEntityMapper {
     int deleteByPrimaryKey(SysParamsConfigEntityKey key);

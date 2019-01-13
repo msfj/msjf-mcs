@@ -2,21 +2,24 @@ package com.msjf.finance.mcs.modules.sms.service.impl;
 
 
 import com.google.common.collect.Maps;
-import com.msjf.finance.mcs.common.response.Response;
+import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
 import com.msjf.finance.mcs.modules.Message;
 import com.msjf.finance.mcs.modules.sms.dao.SpmMessageEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SpmMsgTemplateEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysSmsConfigEntityMapper;
-import com.msjf.finance.mcs.modules.sms.entity.SpmMessageEntity;
+import com.msjf.finance.mcs.modules.sms.emun.SmsEnum;
 import com.msjf.finance.mcs.modules.sms.entity.SpmMessageEntityWithBLOBs;
 import com.msjf.finance.mcs.modules.sms.entity.SpmMsgTemplateEntity;
 import com.msjf.finance.mcs.modules.sms.entity.SysSmsConfigEntity;
 import com.msjf.finance.mcs.modules.utils.*;
+import com.msjf.finance.msjf.core.response.Response;
 import com.xiaoleilu.hutool.json.JSONUtil;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -82,20 +85,20 @@ public class SmsService extends Message {
      * @param mapParam 入参
      *
      */
-    public void doService(HashMap<String, Object> mapParam, Response rs) {
-//
-//        //1-获取入参
+    public Response<VerificationCodeDomain> doService(HashMap<String, Object> mapParam) {
+        Response<VerificationCodeDomain> rs=new Response<>();
+        VerificationCodeDomain verificationCodeDomain=new VerificationCodeDomain();
+        //1-获取入参
         getParam(mapParam);
-//
-//
-        if (CheckUtil.isNull(templateId)) {
-            rs.fail("模板ID不能为空");
-            return;
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        seqNum = "000" + format.format(new Date());
+
+        if (StringUtils.isEmpty(templateId)) {
+            return rs.fail(SmsEnum.TEMPLE_ID_NULL);
         }
-//
-        if (CheckUtil.isNull(mobile)) {
-            rs.fail("手机号不能为空");
-            return;
+
+        if (StringUtils.isEmpty(mobile)) {
+            return rs.fail(SmsEnum.MOBILE_NULL);
         }
 //
 //        checkSmsLimit(rs);
@@ -108,13 +111,12 @@ public class SmsService extends Message {
         CommonUtil commonUtil=SpringContextUtil.getBean("commonUtil");
         String open =commonUtil.getSysConfigValue("sms_open_params_config", "sms_open_params_config");
         if (!("0".equals(open) || "1".equals(open))) {
-            rs.fail("系统参数异常");
-            return;
+            return rs.fail(SmsEnum.SYSTEM_PARA_ERROR);
         }
 //
 //        //2-获取短信内容
         if (getSendSmsContent(mapParam, rs)) {
-            return;
+            return rs;
         }
 
         //4-记录短信发送流水
@@ -125,11 +127,11 @@ public class SmsService extends Message {
             insertSpmMessage(rs);
             transactionManage.commit(status);
         } catch (Exception e) {
-            rs.fail("记录流水失败");
+            rs.fail(SmsEnum.VALIDE_CODE_CHECK_ERROR);
             try {
                 transactionManage.rollback(status);
             } catch (Exception e1) {
-                rs.fail("回滚失败");
+                rs.fail(SmsEnum.ROLL_BACK_ERROR);
                 throw new RuntimeException(e);
             }
             throw new RuntimeException(e);
@@ -141,17 +143,17 @@ public class SmsService extends Message {
 //            LogUtil.info("======根据控制参数设置不发送短信" + templateId + "======");
             outMap.put("result", CommonUtil.NO);
             outMap.put("description", "模拟发送成功");
-            rs.success("发送成功");
+            rs.success(SmsEnum.SMS_SEND_SUCCESS);
         }
         if (CommonUtil.YES.equals(open)) {
             //5-查询短信配置
             SysSmsConfigEntity sysSmsConfigEntity = checkSysSmsConfig(rs);
-            if (sysSmsConfigEntity == null || CommonUtil.NO.equals(rs.getMsg())) {
-                rs.fail(rs.getMsg());
+            if (sysSmsConfigEntity == null || CommonUtil.NO.equals(rs.checkIfFail())) {
+                rs.fail(rs.genResponseService());
                 outMap.put("result", "9999");
                 outMap.put("description", "查询短信配置异常:" + rs.getMsg());
                 updateSpmMessage(outMap, rs);
-                return;
+                return rs;
             }
             //6-发送短信
             outMap = sendSmsMessage(sysSmsConfigEntity,rs);
@@ -161,13 +163,14 @@ public class SmsService extends Message {
         updateSpmMessage(outMap, rs);
 
         if (CommonUtil.NO.equals(outMap.get("result"))) {
-            Map map = Maps.newHashMap();
-            map.put("seqNum", seqNum);
-            rs.success(outMap.get("description"),map);
+            verificationCodeDomain.setSeqNum(seqNum);
+            rs.setData(verificationCodeDomain);
+            rs.success(SmsEnum.SMS_SEND_SUCCESS);
             //ResultUtil.makerSusResults(outMap.get("description"), map, rs);
         } else {
-            rs.fail(outMap.get("description"));
+            rs.fail(SmsEnum.SEND_SMS_FAILD);
         }
+        return rs;
     }
 //
 //    /**
@@ -336,7 +339,7 @@ public class SmsService extends Message {
 //                LogUtil.info("流水更新失败,回滚失败");
                 throw new RuntimeException(e1);
             }
-            rs.fail("");
+              rs.fail(SmsEnum.ROLL_BACK_ERROR);
 //            LogUtil.info("流水更新失败");
             throw new RuntimeException(e);
         }
@@ -352,15 +355,17 @@ public class SmsService extends Message {
      *
      * @return outMap 发送结果数据
      */
-    private HashMap<String, String> sendSmsMessage(SysSmsConfigEntity sysSmsConfigEntity,Response rs) {
+    private HashMap<String, String> sendSmsMessage(SysSmsConfigEntity sysSmsConfigEntity, Response rs) {
         HashMap<String, String> outMap = null;
         String password = sysSmsConfigEntity.getPassword();
         SmsStub.SmsResponse resp = null;
+        String result;
+        String description;
         SmsStub stub;
         try {
             stub = new SmsStub(sysSmsConfigEntity.getUrl());
         } catch (Exception e) {
-//            rs.failed("短信发送失败,网络异常");
+            rs.fail(SmsEnum.SMS_SEND_NETWORK_ERROR);
 //            LogUtil.info("短信发送失败,网络异常" + e);
             outMap.put("result", "999");
             outMap.put("description", "短信发送失败,网络异常");
@@ -384,9 +389,10 @@ public class SmsService extends Message {
             //result=28&description=发送内容与模板不符
 //            LogUtil.info("短信发送成功===" + resp.getOut());
             outMap = URLRequest(resp.getOut());
+            outMap.get("result");
             rs.success("短信发送成功");
         } catch (Exception e) {
-            rs.fail("短信发送失败");
+            rs.fail(SmsEnum.SEND_SMS_FAILD);
 //            LogUtil.info("短信发送失败" + e);
 //            com.websuites.utils.LogUtil.debug("短信发送失败" + e);
             outMap.put("result", "999");
@@ -409,39 +415,38 @@ public class SmsService extends Message {
         SysSmsConfigEntity smsConfigEntity = new SysSmsConfigEntity();
         smsConfigEntity.setSmsType("1");
         List<SysSmsConfigEntity> sysSmsConfigEntityList = sysSmsConfigEntityMapper.selectByEntity(smsConfigEntity);
-        if (CheckUtil.isNull(sysSmsConfigEntityList)) {
+        if (ObjectUtils.isEmpty(sysSmsConfigEntityList)) {
 //            LogUtil.info("未查询到短信配置信息===" + sysSmsConfigEntityList.toString());
-            rs.fail("未查询到短信配置信息");
+            rs.fail(SmsEnum.SMS_CONFIG_NULL);
             return null;
         }
         SysSmsConfigEntity sysSmsConfigEntity=sysSmsConfigEntityList.get(0);
         if (0==sysSmsConfigEntity.getStatus()) {
 //            LogUtil.info("短信配置未启用===" + sysSmsConfigEntity.getStatus());
-            rs.fail("短信配置未启用");
+            rs.fail(SmsEnum.TEMPLATE_NOT_OPEN);
             return null;
         }
-        if (CheckUtil.isNull(sysSmsConfigEntity.getUserId())) {
+        if (StringUtils.isEmpty(sysSmsConfigEntity.getUserId())) {
 //            LogUtil.info("企业编号编号不能为空");
-            rs.fail("短信配置(企业编号编号不能为空)");
+            rs.fail(SmsEnum.SMS_CONFIG_ERROR);
             return null;
-
         }
-        if (CheckUtil.isNull(sysSmsConfigEntity.getAccount())) {
+        if (StringUtils.isEmpty(sysSmsConfigEntity.getAccount())) {
 //            LogUtil.info("登录名不能为空");
-            rs.fail("短信配置(登录名不能为空)");
+            rs.fail(SmsEnum.SMS_CONFIG_ERROR);
             return null;
         }
-        if (CheckUtil.isNull(sysSmsConfigEntity.getPassword())) {
+        if (StringUtils.isEmpty(sysSmsConfigEntity.getPassword())) {
 //            LogUtil.info("密码不能为空");
-            rs.fail("短信配置(密码不能为空)");
+            rs.fail(SmsEnum.SMS_CONFIG_ERROR);
             return null;
         }
-        if (CheckUtil.isNull(sysSmsConfigEntity.getUrl())) {
+        if (StringUtils.isEmpty(sysSmsConfigEntity.getUrl())) {
 //            LogUtil.info("url不能为空");
-            rs.fail("短信配置(url不能为空)");
+            rs.fail(SmsEnum.SMS_CONFIG_ERROR);
             return null;
         }
-        rs.success("查询成功");
+        rs.success();
         return sysSmsConfigEntity;
     }
 
@@ -451,8 +456,6 @@ public class SmsService extends Message {
      * @return SpmMessageEntity 流水实体
      */
     private void insertSpmMessage(Response rs) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        seqNum = "000" + format.format(new Date());
         map.put("seqNum", seqNum);
         map.put("templateId", templateId);
         map.put("mobile", mobile);
@@ -480,10 +483,10 @@ public class SmsService extends Message {
             try {
                 transactionManage.rollback(status);
             } catch (Exception e1) {
-                rs.fail("记录流水失败,回滚流水失败");
+                rs.fail(SmsEnum.VALIDE_CODE_CHECK_ERROR);
                 throw new RuntimeException(e);
             }
-            rs.fail("记录流水失败");
+            rs.fail(SmsEnum.VALIDE_CODE_CHECK_ERROR);
             throw new RuntimeException(e);
         }
         rs.success("保存成功");
@@ -508,17 +511,17 @@ public class SmsService extends Message {
         List<SpmMsgTemplateEntity> spmMsgTemplateEntityList = spmMsgTemplateEntityMapper.selectByEntityLock(templateEntity);
         if (spmMsgTemplateEntityList.size() == CommonUtil.I_NO) {
 //            LogUtil.info("============请检查短信模板" + templateId + "是否开启或配置============");
-            rs.fail("请检查短信模板是否开启或配置");
+            rs.fail(SmsEnum.TEMPLATE_NOT_OPEN);
             return true;
         }
         //3-替换短信模板关键字
         templateContent = spmMsgTemplateEntityList.get(0).getTemplateContent();
-        if (CheckUtil.isNull(templateContent.trim())) {
-            rs.fail("========短信模板为空==========");
+        if (StringUtils.isEmpty(templateContent.trim())) {
+            rs.fail(SmsEnum.TEMPLATE_CONTENT_NULL);
             return true;
         }
         String templateKeys = spmMsgTemplateEntityList.get(0).getTemplateKeys();
-        if (!CheckUtil.isNull(templateKeys.trim())) {
+        if (!StringUtils.isEmpty(templateKeys.trim())) {
 
             String[] templateKeysString = templateKeys.split(",");
             List<String> arrayList = Arrays.asList(templateKeysString);
@@ -526,11 +529,11 @@ public class SmsService extends Message {
 
             for (String key : templateKeysList) {
                 if (templateContent.indexOf(key) == -1) {
-                    rs.fail("模板关键字" + key + "在模板中不存在");
+                    rs.fail(SmsEnum.TEMPLATE_KEYWORD_NULL);
                     return true;
                 }
-                if (CheckUtil.isNull(mapParam.get(key))) {
-                    rs.fail("模板关键字" + key + "的值不能为空");
+                if (StringUtils.isEmpty(mapParam.get(key))) {
+                    rs.fail(SmsEnum.TEMPLATE_KEYWORD_VALUE_NULL);
                     return true;
                 }
                 map.put(key, mapParam.get(key));
@@ -542,15 +545,14 @@ public class SmsService extends Message {
         }
 
 //        LogUtil.info("待发送短信内容===" + templateContent);
-
         return false;
     }
 
     private void getParam(HashMap<String, Object> mapParam) {
-        templateId = CheckUtil.isNull(mapParam.get("templateId")) ? "" : String.valueOf(mapParam.get("templateId"));
-        mobile = CheckUtil.isNull(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
-        smsIp = CheckUtil.isNull(mapParam.get("smsIp")) ? "" : String.valueOf(mapParam.get("smsIp"));
-        loginName = CheckUtil.isNull(mapParam.get("loginName")) ? "" : String.valueOf(mapParam.get("loginName"));
+        templateId = StringUtils.isEmpty(mapParam.get("templateId")) ? "" : String.valueOf(mapParam.get("templateId"));
+        mobile = StringUtils.isEmpty(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
+        smsIp = StringUtils.isEmpty(mapParam.get("smsIp")) ? "" : String.valueOf(mapParam.get("smsIp"));
+        loginName = StringUtils.isEmpty(mapParam.get("loginName")) ? "" : String.valueOf(mapParam.get("loginName"));
         map = Maps.newHashMap();
     }
 
