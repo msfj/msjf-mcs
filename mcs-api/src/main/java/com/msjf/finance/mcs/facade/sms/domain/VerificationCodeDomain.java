@@ -1,6 +1,6 @@
 package com.msjf.finance.mcs.facade.sms.domain;
 
-import com.msjf.finance.mcs.common.response.BaseDomain;
+import com.msjf.finance.msjf.core.domian.BaseDomain;
 
 public class VerificationCodeDomain extends BaseDomain {
 

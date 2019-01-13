@@ -1,6 +1,5 @@
 package com.msjf.finance.mcs.facade.organ.domain;
-
-import com.msjf.finance.mcs.common.response.BaseDomain;
+import com.msjf.finance.msjf.core.domian.BaseDomain;
 
 public class CifCustDomain extends BaseDomain {
     private String customerno; //客户号
