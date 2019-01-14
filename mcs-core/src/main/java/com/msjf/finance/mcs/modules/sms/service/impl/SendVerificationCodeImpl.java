@@ -3,6 +3,7 @@ package com.msjf.finance.mcs.modules.sms.service.impl;
 import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
 import com.msjf.finance.mcs.modules.Message;
 import com.msjf.finance.mcs.modules.sms.dao.AusVerificateCodeEntityMapper;
+import com.msjf.finance.mcs.modules.sms.emun.SendVerificationCodeEnum;
 import com.msjf.finance.mcs.modules.sms.entity.AusVerificateCodeEntity;
 import com.msjf.finance.mcs.modules.sms.entity.AusVerificateCodeEntityKey;
 import com.msjf.finance.mcs.modules.sms.service.SendVerificationCodeService;
@@ -92,17 +93,14 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
 //            return rs;
 //        }
         if (StringUtils.isEmpty(templateId)) {
-            rs.fail("模板id不能为空");
-            return rs;
+            return rs.fail(SendVerificationCodeEnum.TEMPLE_ID_NULL);
         }
         if (StringUtils.isEmpty(mobile) ) {
-            rs.fail("手机号码不能为空");
-            return rs;
+            return rs.fail(SendVerificationCodeEnum.MOBILE_NULL);
         }
         //认证类型 0-服务平台注册 1-管理平台登录 2-修改密码 3-手机换绑
         if (StringUtils.isEmpty(verificateType)) {
-            rs.fail("认证类型不能为空");
-            return rs;
+            return rs.fail(SendVerificationCodeEnum.VERIFICATE_TYPE_NULL);
         }
         /**
          * 换绑第一次发送邀请码传customerno和mobile
@@ -111,11 +109,11 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
         if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
             if(!StringUtils.isEmpty(oldMsgCode)){
                 if(StringUtils.isEmpty(oldMobile)){
-                    rs.fail("原手机不能为空");
+                    rs.fail(SendVerificationCodeEnum.OLD_MOBILE_NULL);
                     return rs;
                 }
                 if(StringUtils.isEmpty(customerno)){
-                    rs.fail("客户代码不能为空");
+                    rs.fail(SendVerificationCodeEnum.CUSTOMERNO_NULL);
                     return rs;
                 }
                 AusVerificateCodeEntity ausVerificateCodeEntity=new AusVerificateCodeEntity();
@@ -125,18 +123,14 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
                 ausVerificateCodeEntity.setVerificatetype(CommonUtil.SMS_CHANGE_MOBILE_TYPE);
                 List<AusVerificateCodeEntity> ausVerificateCodeEntityList=ausVerificateCodeEntityMapper.selectByEntity(ausVerificateCodeEntity);
                 if(StringUtils.isEmpty(ausVerificateCodeEntityList)){
-                    rs.fail("原手机号码校验不通过");
-                    return rs;
+                    return rs.fail(SendVerificationCodeEnum.OLD_MOBILE_CHECK_ERROR);
                 }
-//                CifCustEntity cifCustEntity=cifCustPersistence.queryEntity(customerno);
                 if(mobile.equals(oldMobile)){
-                    rs.fail("换绑手机不能与原手机相同");
-                    return rs;
+                    return rs.fail(SendVerificationCodeEnum.CHANGE_MOBILE_EXCEPTION);
                 }
             }else{
                 if(StringUtils.isEmpty(customerno)){
-                    rs.fail("客户代码不能为空");
-                    return rs;
+                    return rs.fail(SendVerificationCodeEnum.CUSTOMERNO_NULL);
                 }
             }
         }
@@ -152,19 +146,17 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
 ////                mobile = entitys.get(0).getMobile();
 ////            }
 //        }
-        if (!NumberUtil.isNumber(mobile, 11)) {
+        if (!CheckUtil.isNum(mobile, 11)) {
 //            rs.failed("手机号格式不正确");
             return rs;
         }
         //获取验证码有效时间
         String msgCodeFailureTime =CommonUtil.getSysConfigValue("msgcode_failure_time", "code_failure_time");
         if (StringUtils.isEmpty(msgCodeFailureTime)) {
-//            rs.failed("系统参数异常");
-            return rs;
+            return rs.fail(SendVerificationCodeEnum.SYSTEM_PARA_ERROR);
         }
         if (!CheckUtil.isInteger(msgCodeFailureTime)) {
-//            rs.failed("系统参数异常");
-            return rs;
+            return rs.fail(SendVerificationCodeEnum.SYSTEM_PARA_ERROR);
         }
 //
 //
@@ -180,8 +172,7 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
             mapParam.put("loginName", loginName);
 
           SmsService api = SpringContextUtil.getBean("SmsServiceApi");
-            Response<Map> irs = new Response();
-            api.doService(mapParam, irs);
+            Response<VerificationCodeDomain> irs =api.doService(mapParam);
             if (!irs.checkIfSuccess()) {
                 rs.fail(irs);
                 return rs;
@@ -212,10 +203,7 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
         }
 
         //返回数据
-        Map irsResult =irs.getData();
-        VerificationCodeDomain verificationCodeDomain=new VerificationCodeDomain();
-        verificationCodeDomain.setActiveSeconds(msgCodeFailureTime);
-        verificationCodeDomain.setSeqNum(String.valueOf(irsResult.get("seqNum")));
+        VerificationCodeDomain verificationCodeDomain=irs.getData();
 //        Map map = Maps.newHashMap();
 //        map.put("seqNum", String.valueOf(irsResult.get(0).get("seqNum")));
 //        map.put("activeSeconds", msgCodeFailureTime);
@@ -257,20 +245,20 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
     }
     public Boolean checkIsExist(Response rs){
         if(StringUtils.isEmpty(verificateType)){
-            rs.fail("校验类型不能为空");
+            rs.fail(SendVerificationCodeEnum.VERIFICATE_TYPE_NULL);
             return false;
         }
         if(StringUtils.isEmpty(msgCode)){
-            rs.fail("验证码不能为空");
+            rs.fail(SendVerificationCodeEnum.MSGCODE_NULL);
             return false;
         }
         if(StringUtils.isEmpty(mobile)){
-            rs.fail("手机号码不能为空");
+            rs.fail(SendVerificationCodeEnum.MOBILE_NULL);
             return false;
         }
         if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
             if(StringUtils.isEmpty(customerno)){
-                rs.fail("客户代码不能为空");
+                rs.fail(SendVerificationCodeEnum.CUSTOMERNO_NULL);
                 return false;
             }
         }
@@ -297,9 +285,9 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
             ausVerificateCodeEntityList=ausVerificateCodeEntityMapper.selectByEntity(ausVerificateCodeEntity);
         }
         if(StringUtils.isEmpty(ausVerificateCodeEntityList)){
-            rs.fail("校验码不存在");
+            rs.fail(SendVerificationCodeEnum.MSGCODE_NOT_EXIST);
         }
-        rs.success("校验成功");
+        rs.success(SendVerificationCodeEnum.VERIFICATION_SUCCESS);
         return rs;
     }
 

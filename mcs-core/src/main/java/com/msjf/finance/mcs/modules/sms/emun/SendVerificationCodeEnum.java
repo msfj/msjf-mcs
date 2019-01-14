@@ -10,14 +10,14 @@ public enum SendVerificationCodeEnum implements ResponseService {
     MSG_CHECK_EXCEPTION("MCS0005", "信息校验异常"),
     MSG_SEND_EXCEPTION("MCS0006", "发送信息异常"),
     SEND_SMS_FAILD("MCS0006", "短信发送失败"),
-    TEMPLATE_CONTENT_NULL("MCS0007", "========短信模板为空=========="),
-    TEMPLATE_NOT_OPEN("MCS0008", "请检查短信模板是否开启或配置"),
-    SMS_CONFIG_NULL("MCS0009", "未查询到短信配置信息"),
-    SMS_SEND_SUCCESS("MCS0010", "发送成功"),
-    SMS_CONFIG_ERROR("MCS0011", "短信配置出错"),
-    SMS_SEND_NETWORK_ERROR("MCS0012", "短信发送失败,网络异常"),
-    TEMPLATE_KEYWORD_NULL("MCS0013", "模板关键字在模板中不存在"),
-    TEMPLATE_KEYWORD_VALUE_NULL("MCS0013", "模板关键字的值不能为空");
+    OLD_MOBILE_CHECK_ERROR("MCS0007", "原手机号码校验不通过"),
+    CHANGE_MOBILE_EXCEPTION("MCS0008", "换绑手机不能与原手机相同"),
+    VERIFICATION_SUCCESS("MCS0009", "校验成功"),
+    MSGCODE_NOT_EXIST("MCS0010", "校验码不存在"),
+    MSGCODE_NULL("MCS0011", "验证码不能为空"),
+    CUSTOMERNO_NULL("MCS0012", "客户代码不能为空"),
+    OLD_MOBILE_NULL("MCS0013", "原手机不能为空"),
+    VERIFICATE_TYPE_NULL("MCS0013", "认证类型不能为空");
 
     private String errorCode;
     private String errorDesc;

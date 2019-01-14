@@ -10,6 +10,7 @@ import com.msjf.finance.msjf.core.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -76,7 +77,6 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
                 getinvitecode = (String) me1.getValue();  //已有邀请码
             }
         }
-
         CifInviteCodeEntity c = new CifInviteCodeEntity();
         c.setOrgcustomerno(customerno);
         c.setCertificateno(certificateno);
@@ -90,10 +90,10 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
         return rs;
     }
     private void getParam(HashMap<String, Object> mapParam, Response rs) {
-        invitecode = StringUtil.valueOf(mapParam.get("invitecode"));
-        customerno = StringUtil.valueOf(mapParam.get("customerno"));
-        certificateno=StringUtil.valueOf(mapParam.get("certificateno"));
-        orgcustomerno = StringUtil.valueOf(mapParam.get("orgcustomerno"));
+        invitecode = StringUtils.isEmpty(mapParam.get("invitecode")) ? "" : String.valueOf(mapParam.get("invitecode"));
+        customerno = StringUtils.isEmpty(mapParam.get("customerno")) ? "" : String.valueOf(mapParam.get("customerno"));
+        certificateno = StringUtils.isEmpty(mapParam.get("certificateno")) ? "" : String.valueOf(mapParam.get("certificateno"));
+        orgcustomerno = StringUtils.isEmpty(mapParam.get("orgcustomerno")) ? "" : String.valueOf(mapParam.get("orgcustomerno"));
     }
     @Override
     public Response<VerificationCodeDomain> sendInvitecode(HashMap<String, Object> mapParam) {
