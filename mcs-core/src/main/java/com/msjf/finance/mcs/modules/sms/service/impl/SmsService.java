@@ -108,8 +108,7 @@ public class SmsService extends Message {
 //
 //
         //1-获取系统参数
-        CommonUtil commonUtil=SpringContextUtil.getBean("commonUtil");
-        String open =commonUtil.getSysConfigValue("sms_open_params_config", "sms_open_params_config");
+        String open =CommonUtil.getSysConfigValue("sms_open_params_config", "sms_open_params_config");
         if (!("0".equals(open) || "1".equals(open))) {
             return rs.fail(SmsEnum.SYSTEM_PARA_ERROR);
         }
@@ -168,7 +167,8 @@ public class SmsService extends Message {
             rs.success(SmsEnum.SMS_SEND_SUCCESS);
             //ResultUtil.makerSusResults(outMap.get("description"), map, rs);
         } else {
-            rs.fail(SmsEnum.SEND_SMS_FAILD);
+            rs.fail();
+            rs.setMsg(outMap.get("description"));
         }
         return rs;
     }
@@ -390,7 +390,7 @@ public class SmsService extends Message {
 //            LogUtil.info("短信发送成功===" + resp.getOut());
             outMap = URLRequest(resp.getOut());
             outMap.get("result");
-            rs.success("短信发送成功");
+            rs.success(SmsEnum.SMS_SEND_SUCCESS);
         } catch (Exception e) {
             rs.fail(SmsEnum.SEND_SMS_FAILD);
 //            LogUtil.info("短信发送失败" + e);
