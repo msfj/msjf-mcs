@@ -13,6 +13,7 @@ public enum SendVerificationCodeEnum implements ResponseService {
     OLD_MOBILE_CHECK_ERROR("MCS0007", "原手机号码校验不通过"),
     CHANGE_MOBILE_EXCEPTION("MCS0008", "换绑手机不能与原手机相同"),
     VERIFICATION_SUCCESS("MCS0009", "校验成功"),
+    VERIFICATION_FAILD("MCS0014", "校验失败"),
     MSGCODE_NOT_EXIST("MCS0010", "校验码不存在"),
     MSGCODE_NULL("MCS0011", "验证码不能为空"),
     CUSTOMERNO_NULL("MCS0012", "客户代码不能为空"),

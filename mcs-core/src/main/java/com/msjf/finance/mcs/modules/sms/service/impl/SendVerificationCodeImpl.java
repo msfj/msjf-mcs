@@ -215,7 +215,7 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
     @Override
     public Response<VerificationCodeDomain> checkVerificationCode(HashMap<String, Object> mapParam){
         Response rs=new Response();
-        rs.fail();
+        rs.fail(SendVerificationCodeEnum.VERIFICATION_FAILD);
         mobile = StringUtils.isEmpty(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
 
         /** 登录账号 */
@@ -234,14 +234,10 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
          */
         Boolean flag=false;
         if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
-            flag=CommonUtil.checkMsgCodeMoblieChange(customerno,msgCode,mobile,verificateType,false,rs);
+            return CommonUtil.checkMsgCodeMoblieChange(customerno,msgCode,mobile,verificateType,false);
         }else {
-            flag=CommonUtil.checkMsgCode(msgCode,mobile,verificateType,false,rs);
+            return CommonUtil.checkMsgCode(msgCode,mobile,verificateType,false);
         }
-        if(flag){
-           rs.success("校验通过");
-        }
-        return rs;
     }
     public Boolean checkIsExist(Response rs){
         if(StringUtils.isEmpty(verificateType)){

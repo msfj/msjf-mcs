@@ -9,7 +9,8 @@ public enum  CommonUtilEmun implements ResponseService {
     VALIDE_CODE_ERROR("MCS0004", "验证码有误"),
     VALIDE_CODE_IS_USED("MCS0005", "验证码已校验，请勿重复使用"),
     VALIDE_CODE_OVRE_TIME("MCS0006", "验证码已失效，请重新获取"),
-    SEND_SMS_FAILD("MCS0006", "短信发送失败");
+    SEND_SMS_FAILD("MCS0006", "短信发送失败"),
+    CHECK_SUCCESS("MCS0006", "校验成功");
     private String errorCode;
     private String errorDesc;
 
@@ -37,11 +38,11 @@ public enum  CommonUtilEmun implements ResponseService {
 
     @Override
     public String getResponseCode() {
-        return null;
+        return errorCode;
     }
 
     @Override
     public String getResponseMessage() {
-        return null;
+        return errorDesc;
     }
 }

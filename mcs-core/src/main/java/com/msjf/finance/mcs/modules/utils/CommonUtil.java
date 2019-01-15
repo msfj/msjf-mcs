@@ -197,23 +197,19 @@ public class CommonUtil {
      * @param rs
      * @return
      */
-    public static boolean checkMsgCode(String msgcode, String mobile, String verificate_type, Boolean delcode,
-                                       Response rs) {
+    public static Response checkMsgCode(String msgcode, String mobile, String verificate_type, Boolean delcode) {
 
         String open = getSysConfigValue("sms_open_params_config", "sms_open_params_config");
 
         if (CommonUtil.YES.equals(open)) {
             if (StringUtils.isEmpty(msgcode)) {
-                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.MSG_PARAM_NULL);
             }
             if (StringUtils.isEmpty(mobile)) {
-                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.MSG_PARAM_NULL);
             }
             if (StringUtils.isEmpty(verificate_type)) {
-                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.MSG_PARAM_NULL);
             }
             AusVerificateCodeEntityKey ausVerificateCodeEntityKey = new AusVerificateCodeEntityKey();
             ausVerificateCodeEntityKey.setMobile(mobile);
@@ -221,20 +217,19 @@ public class CommonUtil {
             AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper=SpringContextUtil.getBean("ausVerificateCodeEntityMapper");
             AusVerificateCodeEntity ausVerificateCodeEntity = ausVerificateCodeEntityMapper.selectByPrimaryKey(ausVerificateCodeEntityKey);
             if (ObjectUtils.isEmpty(ausVerificateCodeEntity)) {
-                rs.fail(CommonUtilEmun.VALIDE_CODE_NULL);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_NULL);
             }
             if (!msgcode.equals(ausVerificateCodeEntity.getVerificatecode())) {
-                rs.fail(CommonUtilEmun.VALIDE_CODE_ERROR);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_ERROR);
+
             }
             if (!NO.equals(ausVerificateCodeEntity.getStatus())) {//0-未校验 1-已校验
-                rs.fail(CommonUtilEmun.VALIDE_CODE_IS_USED);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_IS_USED);
+
             }
             if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntity.getFailuretime()) > 0) {
-                rs.fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
+
             }
             if (delcode) {
                 ausVerificateCodeEntityMapper.deleteByPrimaryKey(ausVerificateCodeEntityKey);
@@ -246,7 +241,7 @@ public class CommonUtil {
                 ausVerificateCodeEntityMapper.updateByPrimaryKeySelective(e);
             }
         }
-        return true;
+        return new Response().success(CommonUtilEmun.CHECK_SUCCESS);
     }
     /**
      * 检查短信验证码是否正确
@@ -258,22 +253,21 @@ public class CommonUtil {
      * @param rs
      * @return
      */
-    public static boolean checkMsgCodeMoblieChange(String customerno,String msgcode, String mobile, String verificate_type, Boolean delcode,
-                                                   Response rs) {
+    public static Response checkMsgCodeMoblieChange(String customerno,String msgcode, String mobile, String verificate_type, Boolean delcode) {
         String open =getSysConfigValue("sms_open_params_config", "sms_open_params_config");
 
         if (CommonUtil.YES.equals(open)) {
+            if (StringUtils.isEmpty(customerno)) {
+                return new Response<>().fail(CommonUtilEmun.MSG_PARAM_NULL);
+            }
             if (StringUtils.isEmpty(msgcode)) {
-                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.MSG_PARAM_NULL);
             }
             if (StringUtils.isEmpty(mobile)) {
-                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.MSG_PARAM_NULL);
             }
             if (StringUtils.isEmpty(verificate_type)) {
-                rs.fail(CommonUtilEmun.MSG_PARAM_NULL);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.MSG_PARAM_NULL);
             }
             AusVerificateCodeEntityKey ausVerificateCodeEntityKey=new AusVerificateCodeEntityKey();
             ausVerificateCodeEntityKey.setVerificatetype(verificate_type);
@@ -286,20 +280,19 @@ public class CommonUtil {
             List<AusVerificateCodeEntity> ausVerificateCodeEntityList = ausVerificateCodeEntityMapper.selectByEntity(paramAusVerificateCodeEntity);
             AusVerificateCodeEntity ausVerificateCodeEntity=ausVerificateCodeEntityList.get(0);
             if (ObjectUtils.isEmpty(ausVerificateCodeEntity)) {
-                rs.fail(CommonUtilEmun.VALIDE_CODE_NULL);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_NULL);
             }
             if (!msgcode.equals(ausVerificateCodeEntity.getVerificatecode())) {
-                rs.fail(CommonUtilEmun.VALIDE_CODE_ERROR);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_ERROR);
+
             }
             if (!NO.equals(ausVerificateCodeEntity.getStatus())) {//0-未校验 1-已校验
-                rs.fail(CommonUtilEmun.VALIDE_CODE_IS_USED);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_IS_USED);
+
             }
             if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntity.getFailuretime()) > 0) {
-                rs.fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
-                return false;
+                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
+
             }
             if (delcode) {
                 ausVerificateCodeEntityMapper.deleteByPrimaryKey(ausVerificateCodeEntityKey);
@@ -312,6 +305,6 @@ public class CommonUtil {
                 ausVerificateCodeEntityMapper.updateByPrimaryKeySelective(e);
             }
         }
-        return true;
+        return new Response().success(CommonUtilEmun.CHECK_SUCCESS);
     }
 }
