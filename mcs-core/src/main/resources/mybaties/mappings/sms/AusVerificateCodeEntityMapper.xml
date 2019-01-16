@@ -111,7 +111,7 @@
 		]]>
     <include refid="Base_Column_List" />
     <![CDATA[
-		from kpfsp.aus_verificate_code
+		from mcs.aus_verificate_code
 	]]>
     <where>
       <if test="mobile != null and mobile!= '' "><![CDATA[ and mobile=#{mobile}]]></if>
