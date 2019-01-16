@@ -279,7 +279,9 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
                 ("verificateType"));
         msgCode=StringUtils.isEmpty(mapParam.get("msgCode")) ? "" : String.valueOf(mapParam.get
                 ("msgCode"));
-        checkIsExist(rs);
+        if(!checkIsExist(rs)){
+            return rs;
+        }
         List<AusVerificateCodeEntity> ausVerificateCodeEntityList=null;
         if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
             AusVerificateCodeEntity ausVerificateCodeEntity=new AusVerificateCodeEntity();
