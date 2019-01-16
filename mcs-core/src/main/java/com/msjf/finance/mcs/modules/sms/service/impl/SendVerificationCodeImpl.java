@@ -271,7 +271,14 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
     @Override
     public Response<VerificationCodeDomain> isExistVerificationCode(HashMap<String, Object> mapParam) {
         Response<VerificationCodeDomain> rs=new Response();
-        getParam(mapParam);
+        mobile = StringUtils.isEmpty(mapParam.get("mobile")) ? "" : String.valueOf(mapParam.get("mobile"));
+        /** 登录账号 */
+        customerno = StringUtils.isEmpty(mapParam.get("customerno")) ? "" : String.valueOf(mapParam.get
+                ("customerno"));
+        verificateType = StringUtils.isEmpty(mapParam.get("verificateType")) ? "" : String.valueOf(mapParam.get
+                ("verificateType"));
+        msgCode=StringUtils.isEmpty(mapParam.get("msgCode")) ? "" : String.valueOf(mapParam.get
+                ("msgCode"));
         checkIsExist(rs);
         List<AusVerificateCodeEntity> ausVerificateCodeEntityList=null;
         if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
