@@ -1,6 +1,7 @@
 package com.msjf.finance.mcs.modules.sms.facade;
 
 import com.msjf.finance.mcs.facade.sms.SendVerificationCodeFacade;
+import com.msjf.finance.mcs.facade.sms.domain.ReqSendVerificationCodeDomain;
 import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
 import com.msjf.finance.mcs.modules.sms.emun.SendVerificationCodeEnum;
 import com.msjf.finance.mcs.modules.sms.service.SendVerificationCodeService;
@@ -14,9 +15,9 @@ public class SendVerificationCodeFacadeImpl implements SendVerificationCodeFacad
     @Resource
     SendVerificationCodeService sendVerificationCodeService;
     @Override
-    public Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam) {
+    public Response<VerificationCodeDomain> SendRegisterVerificationCode(ReqSendVerificationCodeDomain reqSendVerificationCodeDomain) {
         try{
-            return sendVerificationCodeService.SendRegisterVerificationCode(mapParam);
+            return sendVerificationCodeService.SendRegisterVerificationCode(reqSendVerificationCodeDomain);
         }catch (Exception e){
             return new Response<>().fail(SendVerificationCodeEnum.MSG_SEND_EXCEPTION);
         }

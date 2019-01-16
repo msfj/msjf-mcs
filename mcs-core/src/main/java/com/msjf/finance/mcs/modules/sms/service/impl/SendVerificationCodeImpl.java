@@ -1,5 +1,7 @@
 package com.msjf.finance.mcs.modules.sms.service.impl;
 
+import com.google.common.collect.Maps;
+import com.msjf.finance.mcs.facade.sms.domain.ReqSendVerificationCodeDomain;
 import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
 import com.msjf.finance.mcs.modules.Message;
 import com.msjf.finance.mcs.modules.sms.dao.AusVerificateCodeEntityMapper;
@@ -84,10 +86,15 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
         oldMobile=StringUtils.isEmpty(mapParam.get("oldMobile")) ? "" : String.valueOf(mapParam.get
                 ("oldMobile"));
     }
-    public Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam ){
+    public Response<VerificationCodeDomain> SendRegisterVerificationCode(ReqSendVerificationCodeDomain reqSendVerificationCodeDomain ){
         Response<VerificationCodeDomain> rs=new Response();
         rs.fail();
-        getParam(mapParam);
+        mobile =reqSendVerificationCodeDomain.getMobile();
+
+        /** 登录账号 */
+        verificateType = reqSendVerificationCodeDomain.getVerificateType();
+        customerno = reqSendVerificationCodeDomain.getCustomerno();
+        templateId =reqSendVerificationCodeDomain.getTemplateId();
 //        if ( CheckUtil.isNull(customerno)) {
 //            rs.fail("客户代码不能为空");
 //            return rs;
@@ -164,6 +171,7 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
 //        //您的验证码是{xxxxxxxxxxxxxxx}在{xxxxxxxx}内有效{x}
 //        //您的验证码是3212，在30分钟内有效。
             String code = UtilTools.getRandomCode(new BigDecimal(0), 4);
+            HashMap mapParam= Maps.newHashMap();
             mapParam.put("verifyCode", code + ",");
             mapParam.put("activeSeconds", Integer.parseInt(msgCodeFailureTime) / 60 + "分钟");
             mapParam.put("symbol", "。");

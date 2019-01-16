@@ -1,4 +1,5 @@
 package com.msjf.finance.mcs.facade.sms;
+import com.msjf.finance.mcs.facade.sms.domain.ReqSendVerificationCodeDomain;
 import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
 import com.msjf.finance.msjf.core.response.Response;
 
@@ -8,7 +9,7 @@ public interface SendVerificationCodeFacade {
     /*
         发动注册码和手机号码换绑
      */
-    Response<VerificationCodeDomain> SendRegisterVerificationCode(HashMap<String, Object> mapParam) ;
+    Response<VerificationCodeDomain> SendRegisterVerificationCode(ReqSendVerificationCodeDomain reqSendVerificationCodeDomain) ;
     /*
        验证手机号码是否正确
      */
