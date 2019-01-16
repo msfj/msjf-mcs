@@ -14,6 +14,7 @@ import com.msjf.finance.msjf.core.response.Response;
 import com.xiaoleilu.hutool.util.NumberUtil;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.util.StringUtil;
 
@@ -297,7 +298,7 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
             ausVerificateCodeEntity.setMobile(mobile);
             ausVerificateCodeEntityList=ausVerificateCodeEntityMapper.selectByEntity(ausVerificateCodeEntity);
         }
-        if(StringUtils.isEmpty(ausVerificateCodeEntityList)){
+        if(ObjectUtils.isEmpty(ausVerificateCodeEntityList)){
             rs.fail(SendVerificationCodeEnum.MSGCODE_NOT_EXIST);
         }
         rs.success(SendVerificationCodeEnum.VERIFICATION_SUCCESS);
