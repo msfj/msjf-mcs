@@ -203,7 +203,7 @@
 			]]>
     <include refid="Base_Column_List" />
     <![CDATA[
-		from kpfsp.cif_invite_code
+		from mcs.cif_invite_code
 	]]>
     <where>
       <if test="serialno != null and serialno!= '' "><![CDATA[ and serialno=#{serialno}]]></if>
