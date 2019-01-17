@@ -283,7 +283,7 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
         if(!checkIsExist(rs)){
             return rs;
         }
-        List<AusVerificateCodeEntity> ausVerificateCodeEntityList=null;
+        List<AusVerificateCodeEntity> ausVerificateCodeEntityList;
         if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
             AusVerificateCodeEntity ausVerificateCodeEntity=new AusVerificateCodeEntity();
             ausVerificateCodeEntity.setCustomerno(customerno);
@@ -299,10 +299,9 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
             ausVerificateCodeEntityList=ausVerificateCodeEntityMapper.selectByEntity(ausVerificateCodeEntity);
         }
         if(ObjectUtils.isEmpty(ausVerificateCodeEntityList)){
-            rs.fail(SendVerificationCodeEnum.MSGCODE_NOT_EXIST);
+            return rs.fail(SendVerificationCodeEnum.MSGCODE_NOT_EXIST);
         }
-        rs.success(SendVerificationCodeEnum.VERIFICATION_SUCCESS);
-        return rs;
+        return rs.success(SendVerificationCodeEnum.VERIFICATION_SUCCESS);
     }
 
 }
