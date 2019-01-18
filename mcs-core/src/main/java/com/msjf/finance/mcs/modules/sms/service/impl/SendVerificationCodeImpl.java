@@ -216,12 +216,12 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
 
         //返回数据
         VerificationCodeDomain verificationCodeDomain=irs.getData();
+        verificationCodeDomain.setActiveSeconds(msgCodeFailureTime);
 //        Map map = Maps.newHashMap();
 //        map.put("seqNum", String.valueOf(irsResult.get(0).get("seqNum")));
 //        map.put("activeSeconds", msgCodeFailureTime);
 //        ResultUtil.makerSusResults(irs.getErrorMessage(), map, rs);
-        rs.success(verificationCodeDomain);
-        return rs;
+        return rs.success(SendVerificationCodeEnum.SEND_SMS_SUCCESS,verificationCodeDomain);
     }
 
     @Override

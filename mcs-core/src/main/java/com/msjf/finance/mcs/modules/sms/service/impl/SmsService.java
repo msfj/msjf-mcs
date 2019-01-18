@@ -149,8 +149,7 @@ public class SmsService extends Message {
         updateSpmMessage(outMap, rs);
         if (CommonUtil.NO.equals(outMap.get("result"))) {
             verificationCodeDomain.setSeqNum(seqNum);
-            rs.setData(verificationCodeDomain);
-            rs.success(SmsEnum.SMS_SEND_SUCCESS);
+            rs.success(SmsEnum.SMS_SEND_SUCCESS,verificationCodeDomain);
             //ResultUtil.makerSusResults(outMap.get("description"), map, rs);
         } else {
             rs.fail();

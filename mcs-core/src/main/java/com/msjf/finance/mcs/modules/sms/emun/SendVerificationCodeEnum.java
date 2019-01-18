@@ -18,7 +18,8 @@ public enum SendVerificationCodeEnum implements ResponseService {
     MSGCODE_NULL("MCS0011", "验证码不能为空"),
     CUSTOMERNO_NULL("MCS0012", "客户代码不能为空"),
     OLD_MOBILE_NULL("MCS0013", "原手机不能为空"),
-    VERIFICATE_TYPE_NULL("MCS0013", "认证类型不能为空");
+    VERIFICATE_TYPE_NULL("MCS0013", "认证类型不能为空"),
+    SEND_SMS_SUCCESS("MCS0014", "短信发送成功");
 
     private String errorCode;
     private String errorDesc;
