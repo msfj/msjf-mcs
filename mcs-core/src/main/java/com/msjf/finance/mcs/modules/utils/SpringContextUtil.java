@@ -12,11 +12,6 @@ public class SpringContextUtil implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     protected static final Logger logger = LoggerFactory.getLogger(SpringContextUtil.class);
-    static {
-        if (SpringContextUtil.applicationContext == null) {
-            initApplicationContext();
-        }
-    }
     public synchronized static void initApplicationContext() {
         initApplicationContext("classpath:/applicationContext.xml");
     }

@@ -16,8 +16,11 @@ import com.msjf.finance.mcs.modules.utils.*;
 import com.msjf.finance.msjf.core.response.Response;
 import com.xiaoleilu.hutool.json.JSONUtil;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -112,29 +115,13 @@ public class SmsService extends Message {
         if (!("0".equals(open) || "1".equals(open))) {
             return rs.fail(SmsEnum.SYSTEM_PARA_ERROR);
         }
-//
 //        //2-获取短信内容
         if (getSendSmsContent(mapParam, rs)) {
             return rs;
         }
 
         //4-记录短信发送流水
-        TransactionManage transactionManage = new TransactionManage();
-        TransactionStatus status = null;
-        try {
-            status = transactionManage.newTransaction();
-            insertSpmMessage(rs);
-            transactionManage.commit(status);
-        } catch (Exception e) {
-            rs.fail(SmsEnum.VALIDE_CODE_CHECK_ERROR);
-            try {
-                transactionManage.rollback(status);
-            } catch (Exception e1) {
-                rs.fail(SmsEnum.ROLL_BACK_ERROR);
-                throw new RuntimeException(e);
-            }
-            throw new RuntimeException(e);
-        }
+        insertSpmMessage(rs);
 
         HashMap<String, String> outMap = Maps.newHashMap();
 
@@ -160,7 +147,6 @@ public class SmsService extends Message {
 
         //5-更新短信发送流水
         updateSpmMessage(outMap, rs);
-
         if (CommonUtil.NO.equals(outMap.get("result"))) {
             verificationCodeDomain.setSeqNum(seqNum);
             rs.setData(verificationCodeDomain);

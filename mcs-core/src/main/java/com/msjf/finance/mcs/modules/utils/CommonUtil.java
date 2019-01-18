@@ -9,6 +9,8 @@ import com.msjf.finance.mcs.modules.sms.entity.*;
 import com.msjf.finance.mcs.modules.utils.emun.CommonUtilEmun;
 import com.msjf.finance.msjf.core.response.Response;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -19,7 +21,6 @@ import java.util.Map;
 import java.util.Random;
 
 public class CommonUtil {
-
     /**
      * 日期格式 yyyyMMdd
      */
@@ -70,12 +71,7 @@ public class CommonUtil {
     public static final String SMS_LOGIN_TYPE = "1";
     public static final String SMS_CHANGE_PWD_TYPE = "2";
     public static final String SMS_CHANGE_MOBILE_TYPE = "3";
-    @Resource
-    SysParamsConfigEntityMapper sysParamsConfigMapper;
-    @Resource
-    CifInviteCodeEntityMapper cifInviteCodeEntityMapper;
-//    @Resource
-//    SpringContextUtil springContextUtil;
+
     public static String getSysConfigValue(String paramId, String paramType){
         SysParamsConfigEntityKey sysParamsConfigKey=new SysParamsConfigEntityKey();
         sysParamsConfigKey.setDistributorId(DISTRIBUTORID);
@@ -97,7 +93,7 @@ public class CommonUtil {
      * @param rs            返回""时无需发送邀请码
      * @return
      */
-    public Map<Integer,Object> getInviteCode1(final String customerno, String certificateno, final String isMember,
+    public static Map<Integer,Object> getInviteCode1(final String customerno, String certificateno, final String isMember,
                                                      Response rs) {
         HashMap<Integer, Object> map = new HashMap<Integer, Object>();
         if (!NO.equals(isMember) && !YES.equals(isMember)) {
@@ -113,7 +109,7 @@ public class CommonUtil {
             c.setCertificateno(certificateno);
             c.setStatus(NO);
         }
-
+        CifInviteCodeEntityMapper cifInviteCodeEntityMapper=SpringContextUtil.getBean("cifInviteCodeEntityMapper");
         List<CifInviteCodeEntity> cs = cifInviteCodeEntityMapper
                 .selectByEntity(c);
         if (ObjectUtils.isEmpty(cs)) {

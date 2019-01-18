@@ -14,6 +14,8 @@ import com.msjf.finance.msjf.core.response.Response;
 import com.xiaoleilu.hutool.util.NumberUtil;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.util.StringUtil;
@@ -31,6 +33,8 @@ import java.util.Map;
 public class SendVerificationCodeImpl extends Message implements SendVerificationCodeService {
     @Resource
     AusVerificateCodeEntityMapper ausVerificateCodeEntityMapper;
+    @Resource
+    SpringContextUtil springContextUtil;
     /**
      * 登陆名
      */
@@ -166,11 +170,10 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
         if (!CheckUtil.isInteger(msgCodeFailureTime)) {
             return rs.fail(SendVerificationCodeEnum.SYSTEM_PARA_ERROR);
         }
-//
-//
-//        //您的验证码是{verifyCode}在{activeSeconds}内有效{symbol}
-//        //您的验证码是{xxxxxxxxxxxxxxx}在{xxxxxxxx}内有效{x}
-//        //您的验证码是3212，在30分钟内有效。
+
+          //您的验证码是{verifyCode}在{activeSeconds}内有效{symbol}
+          //您的验证码是{xxxxxxxxxxxxxxx}在{xxxxxxxx}内有效{x}
+          //您的验证码是3212，在30分钟内有效。
             String code = UtilTools.getRandomCode(new BigDecimal(0), 4);
             HashMap mapParam= Maps.newHashMap();
             mapParam.put("verifyCode", code + ",");
@@ -187,7 +190,7 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
                 return rs;
             }
 
-        //将短信验证码写入kpfsp.aus_verificate_code 表
+        //将短信验证码写入mcs.aus_verificate_code 表
         AusVerificateCodeEntity ausVerificateCodeEntity = new AusVerificateCodeEntity();
         ausVerificateCodeEntity.setMobile(mobile);
         ausVerificateCodeEntity.setVerificatetype(verificateType);

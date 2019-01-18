@@ -58,14 +58,12 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
     private String issendsms;
     @Resource
     CifInviteCodeEntityMapper cifInviteCodeEntityMapper;
-    @Autowired
-    CommonUtil commonUtil;
     @Override
     public Response<VerificationCodeDomain> getInviteCode(HashMap<String, Object> mapParam) {
         Response rs=new Response();
         rs.fail();
         //生成并返回邀请码
-        Map<Integer, Object> inviteCodeMap =  commonUtil.getInviteCode1(customerno, certificateno, CommonUtil.YES, rs);
+        Map<Integer, Object> inviteCodeMap =  CommonUtil.getInviteCode1(customerno, certificateno, CommonUtil.YES, rs);
         Set<Map.Entry<Integer, Object>> set=inviteCodeMap.entrySet();
         Iterator<Map.Entry<Integer, Object>> iter=set.iterator();
         while(iter.hasNext()){
@@ -107,7 +105,7 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
      */
     private void addInviteCode(Response rs) {
         int seconds = Integer.valueOf(
-                commonUtil.getSysConfigValue(SYS_PARAM_ID_FAILURE_TIME_INVITECODE, SYS_PARAM_TYPE_FAILURE_TIME)) * 3600;
+                CommonUtil.getSysConfigValue(SYS_PARAM_ID_FAILURE_TIME_INVITECODE, SYS_PARAM_TYPE_FAILURE_TIME)) * 3600;
         String failuretime = DateUtil.addSeconds(DateUtil.getUserDate(DATE_FMT_DATETIME), DATE_FMT_DATETIME, seconds,rs);
         CifInviteCodeEntity cifInviteCodeEntity = new CifInviteCodeEntity();
         //cifInviteCodeEntity.setSerialno(CommonUtil.getOnlyId());
