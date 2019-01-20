@@ -47,18 +47,19 @@
     </properties>
 
     <build>
-    <plugins>
-        <!-- Compiler 插件, 设定JDK版本 -->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>${maven_compiler_plugin_version}</version>
-            <configuration>
-                <source>${java_source_version}</source>
-                <target>${java_target_version}</target>
-                <encoding>${file_encoding}</encoding>
-            </configuration>
-        </plugin>
-    </plugins>
+        <plugins>
+            <!-- Compiler 插件, 设定JDK版本 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven_compiler_plugin_version}</version>
+                <configuration>
+                    <source>${java_source_version}</source>
+                    <target>${java_target_version}</target>
+                    <encoding>${file_encoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+
 </project>
