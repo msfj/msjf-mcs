@@ -10,6 +10,7 @@ import com.msjf.finance.mcs.modules.sms.entity.AusVerificateCodeEntity;
 import com.msjf.finance.mcs.modules.sms.entity.AusVerificateCodeEntityKey;
 import com.msjf.finance.mcs.modules.sms.service.SendVerificationCodeService;
 import com.msjf.finance.mcs.modules.utils.*;
+import com.msjf.finance.mcs.modules.utils.emun.CommonUtilEmun;
 import com.msjf.finance.msjf.core.response.Response;
 import com.xiaoleilu.hutool.util.NumberUtil;
 import org.springframework.context.annotation.Scope;
@@ -244,7 +245,6 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
         /**
          * 根据不同类型去调不同的校验方式
          */
-        Boolean flag=false;
         if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
             return CommonUtil.checkMsgCodeMoblieChange(customerno,msgCode,mobile,verificateType,false);
         }else {
@@ -304,7 +304,9 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
         if(ObjectUtils.isEmpty(ausVerificateCodeEntityList)){
             return rs.fail(SendVerificationCodeEnum.MSGCODE_NOT_EXIST);
         }
+        if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntityList.get(0).getFailuretime()) > 0) {
+            return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
+        }
         return rs.success(SendVerificationCodeEnum.VERIFICATION_SUCCESS);
     }
-
 }
