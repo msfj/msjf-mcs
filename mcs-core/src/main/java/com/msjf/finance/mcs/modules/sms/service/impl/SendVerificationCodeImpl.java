@@ -286,26 +286,30 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
         if(!checkIsExist(rs)){
             return rs;
         }
-        List<AusVerificateCodeEntity> ausVerificateCodeEntityList;
-        if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
-            AusVerificateCodeEntity ausVerificateCodeEntity=new AusVerificateCodeEntity();
-            ausVerificateCodeEntity.setCustomerno(customerno);
-            ausVerificateCodeEntity.setVerificatecode(msgCode);
-            ausVerificateCodeEntity.setVerificatetype(verificateType);
-            ausVerificateCodeEntity.setMobile(mobile);
-            ausVerificateCodeEntityList=ausVerificateCodeEntityMapper.selectByEntity(ausVerificateCodeEntity);
-        }else{
-            AusVerificateCodeEntity ausVerificateCodeEntity=new AusVerificateCodeEntity();
-            ausVerificateCodeEntity.setVerificatecode(msgCode);
-            ausVerificateCodeEntity.setVerificatetype(verificateType);
-            ausVerificateCodeEntity.setMobile(mobile);
-            ausVerificateCodeEntityList=ausVerificateCodeEntityMapper.selectByEntity(ausVerificateCodeEntity);
-        }
-        if(ObjectUtils.isEmpty(ausVerificateCodeEntityList)){
-            return rs.fail(SendVerificationCodeEnum.MSGCODE_NOT_EXIST);
-        }
-        if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntityList.get(0).getFailuretime()) > 0) {
-            return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
+        String open =CommonUtil.getSysConfigValue("sms_open_params_config", "sms_open_params_config");
+
+        if (CommonUtil.YES.equals(open)) {
+            List<AusVerificateCodeEntity> ausVerificateCodeEntityList;
+            if(CommonUtil.SMS_CHANGE_MOBILE_TYPE.equals(verificateType)){
+                AusVerificateCodeEntity ausVerificateCodeEntity=new AusVerificateCodeEntity();
+                ausVerificateCodeEntity.setCustomerno(customerno);
+                ausVerificateCodeEntity.setVerificatecode(msgCode);
+                ausVerificateCodeEntity.setVerificatetype(verificateType);
+                ausVerificateCodeEntity.setMobile(mobile);
+                ausVerificateCodeEntityList=ausVerificateCodeEntityMapper.selectByEntity(ausVerificateCodeEntity);
+            }else{
+                AusVerificateCodeEntity ausVerificateCodeEntity=new AusVerificateCodeEntity();
+                ausVerificateCodeEntity.setVerificatecode(msgCode);
+                ausVerificateCodeEntity.setVerificatetype(verificateType);
+                ausVerificateCodeEntity.setMobile(mobile);
+                ausVerificateCodeEntityList=ausVerificateCodeEntityMapper.selectByEntity(ausVerificateCodeEntity);
+            }
+            if(ObjectUtils.isEmpty(ausVerificateCodeEntityList)){
+                return rs.fail(SendVerificationCodeEnum.MSGCODE_NOT_EXIST);
+            }
+            if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntityList.get(0).getFailuretime()) > 0) {
+                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
+            }
         }
         return rs.success(SendVerificationCodeEnum.VERIFICATION_SUCCESS);
     }
