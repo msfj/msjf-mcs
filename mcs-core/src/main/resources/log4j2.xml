@@ -4,7 +4,7 @@
         <Property name="sysName">mcs</Property>
         <Property name="bizLogLevel">INFO</Property>
         <Property name="otherLogLevel">INFO</Property>
-        <Property name="logFilePath">/root/.jenkins/jobs/mcs/logs</Property>
+        <Property name="logFilePath">/root/.jenkins/jobs/mcs/workspace/logs</Property>
 <!--        <Property name="logFilePath">D:/project/logs</Property>-->
         <Property name="errorLogFile">${sysName}_err</Property>
         <Property name="bizLogFile">${sysName}_biz</Property>
