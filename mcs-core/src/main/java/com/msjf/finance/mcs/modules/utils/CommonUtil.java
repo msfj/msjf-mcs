@@ -2,10 +2,12 @@ package com.msjf.finance.mcs.modules.utils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Maps;
 import com.msjf.finance.mcs.modules.sms.dao.AusVerificateCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.CifInviteCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigEntityMapper;
 import com.msjf.finance.mcs.modules.sms.entity.*;
+import com.msjf.finance.mcs.modules.sms.service.impl.SmsService;
 import com.msjf.finance.mcs.modules.utils.emun.CommonUtilEmun;
 import com.msjf.finance.msjf.core.response.Response;
 import org.springframework.stereotype.Component;
@@ -15,10 +17,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collector;
 
 public class CommonUtil {
     /**
@@ -93,9 +93,12 @@ public class CommonUtil {
      * @param rs            返回""时无需发送邀请码
      * @return
      */
-    public static Map<Integer,Object> getInviteCode1(final String customerno, String certificateno, final String isMember,
+    public static Map<String,String> getInviteCode(final String customerno, String certificateno, final String isMember,
                                                      Response rs) {
-        HashMap<Integer, Object> map = new HashMap<Integer, Object>();
+        HashMap<String, String> map = Maps.newHashMap();
+        //是否重新获取一个邀请码
+        String isNewCode="1";
+        String inviteCode;
         if (!NO.equals(isMember) && !YES.equals(isMember)) {
             rs.fail(CommonUtilEmun.MSG_PARAM_ERROR);
             throw new RuntimeException(rs.getMsg());
@@ -113,8 +116,9 @@ public class CommonUtil {
         List<CifInviteCodeEntity> cs = cifInviteCodeEntityMapper
                 .selectByEntity(c);
         if (ObjectUtils.isEmpty(cs)) {
-            String invitecode1 = CommonUtil.getVerifyCode(6);
-            map.put(0, invitecode1);
+            inviteCode = CommonUtil.getVerifyCode(6);
+            map.put("isNewCode",isNewCode);
+            map.put("inviteCode",inviteCode);
             return map;
         }
         CifInviteCodeEntity cc = Iterators.find(cs.iterator(), new Predicate<CifInviteCodeEntity>() {
@@ -134,13 +138,56 @@ public class CommonUtil {
 
         }, null);
         if (!ObjectUtils.isEmpty(cc)) {
-            String invitecode2 = cc.getInvitecode();
-            map.put(1, invitecode2);
-            return map;
+            inviteCode = cc.getInvitecode();
+            isNewCode="0";
+        }else {
+            inviteCode = CommonUtil.getVerifyCode(6);
         }
-        String invitecode = CommonUtil.getVerifyCode(6);
-        map.put(0, invitecode);
+        map.put("isNewCode",isNewCode);
+        map.put("inviteCode",inviteCode);
         return map;
+    }
+    /**
+     * 发送邀请认证短信
+     *
+     * @param companyName
+     * @param mobile
+     * @param invitecode
+     * @param rs
+     */
+    public static void sendInviteCode(String companyName, String mobile, String invitecode, String customerno,
+                                      String smsIp,String certificateno, Response rs) {
+//        if (CheckUtil.checkNull(companyName, "企业名称", rs)) {
+//            throw new WsRuntimeException(rs.getErrorMessage());
+//        }
+//        if (CheckUtil.checkNull(mobile, "手机号", rs)) {
+//            throw new WsRuntimeException(rs.getErrorMessage());
+//        }
+//        if (CheckUtil.checkNull(invitecode, "邀请码", rs)) {
+//            throw new WsRuntimeException(rs.getErrorMessage());
+//        }
+//        if (CheckUtil.checkNull(customerno, "客户代码", rs)) {
+//            throw new WsRuntimeException(rs.getErrorMessage());
+//        }
+//        String validtime = getSysConfigValue("invitecode_failure_time", "code_failure_time");
+//        //{name}企业邀请您关注{dot}邀请码{code}在{validtime}内有效{mark}
+//        HashMap<String, Object> mapParam = new HashMap<String, Object>();
+//        mapParam.put("name", companyName);
+//        mapParam.put("dot", "，");
+//        mapParam.put("code", invitecode);
+//        mapParam.put("validtime", validtime + "小时");
+//        mapParam.put("mark", "。");
+//        mapParam.put("templateId", "2031012026748");
+//        mapParam.put("mobile", mobile);
+//        mapParam.put("loginName", CustEntity.getLoginname());
+//        mapParam.put("smsIp", smsIp);
+//        SmsService api = (SmsService) SpringContextUtil.getBean("SmsServiceApi");
+//        IResult irs = new Result();
+//        api.doService(mapParam);
+//        if (!irs.isSuccessful()) {
+//            rs.failed(irs.getErrorMessage());
+//            //throw new WsRuntimeException(rs.getErrorMessage());
+//        }
     }
     /**
      * 获取系统参数
@@ -190,7 +237,6 @@ public class CommonUtil {
      * @param mobile          手机号码
      * @param verificate_type 认证类型 0-服务平台注册 1-管理平台登录
      * @param delcode         是否删除认证记录
-     * @param rs
      * @return
      */
     public static Response checkMsgCode(String msgcode, String mobile, String verificate_type, Boolean delcode) {
@@ -246,7 +292,6 @@ public class CommonUtil {
      * @param mobile          手机号码
      * @param verificate_type 认证类型 3- 手机号码换绑
      * @param delcode         是否删除认证记录
-     * @param rs
      * @return
      */
     public static Response checkMsgCodeMoblieChange(String customerno,String msgcode, String mobile, String verificate_type, Boolean delcode) {

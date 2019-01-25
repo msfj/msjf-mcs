@@ -1,5 +1,6 @@
 package com.msjf.finance.mcs.modules.sms.service.impl;
 
+import com.msjf.finance.mcs.facade.sms.domain.InviteCodeDomain;
 import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
 import com.msjf.finance.mcs.modules.sms.SmsSend;
 import com.msjf.finance.mcs.modules.sms.dao.CifInviteCodeEntityMapper;
@@ -42,8 +43,6 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
     /** 备注          */
     private String remark;
 
-    /** 邀请码      */
-    private String invitecode;
 
     /** 邀请码返回      */
     private String getinvitecode;
@@ -56,24 +55,52 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
 
     /** 是否发送短信 0-未发送 1-已发送 */
     private String issendsms;
+
+    /** 邀请类型 1-设立 2-变更 3-会员邀请 4-迁入*/
+    private String inviteType;
+
+
+    private String isMember;
     @Resource
     CifInviteCodeEntityMapper cifInviteCodeEntityMapper;
     @Override
-    public Response<VerificationCodeDomain> getInviteCode(HashMap<String, Object> mapParam) {
-        Response rs=new Response();
+    public Response<InviteCodeDomain> getInviteCode(HashMap<String, Object> mapParam) {
+        Response<InviteCodeDomain> rs=new Response();
         rs.fail();
-        //生成并返回邀请码
-        Map<Integer, Object> inviteCodeMap =  CommonUtil.getInviteCode1(customerno, certificateno, CommonUtil.YES, rs);
-        Set<Map.Entry<Integer, Object>> set=inviteCodeMap.entrySet();
-        Iterator<Map.Entry<Integer, Object>> iter=set.iterator();
-        while(iter.hasNext()){
-            Map.Entry<Integer, Object> me1=iter.next();
-            if (me1.getKey().equals(0)) {  //没有邀请码，生产邀请码
-                getinvitecode = (String) me1.getValue();
-                addInviteCode(rs);//写邀请码表
-            } else {
-                getinvitecode = (String) me1.getValue();  //已有邀请码
+        getParam(mapParam);
+        if(StringUtils.isEmpty(customerno)){
+            return rs.fail();
+        }
+        if(StringUtils.isEmpty(certificateno)){
+            return rs.fail();
+        }
+        //除了迁入为非会员邀请，其他会员邀请都必须传企业客户代码
+        if(!"4".equals(inviteType)){
+            if(StringUtils.isEmpty(orgcustomerno)){
+                return rs.fail();
             }
+        }
+
+        if(!"4".equals(inviteType)){
+            if(StringUtils.isEmpty(orgcustomerno)){
+                return rs.fail();
+            }
+        }
+        String inviteCodeCust;
+        if(!"4".equals(inviteType)){
+            inviteCodeCust=orgcustomerno;
+            isMember=YES;
+        }else {
+            inviteCodeCust=customerno;
+            isMember=NO;
+        }
+        //生成并返回邀请码
+        Map<String, String> inviteCodeMap =  CommonUtil.getInviteCode(inviteCodeCust, certificateno, isMember, rs);
+        if("1".equals(inviteCodeMap.get("isNewCode"))){
+            getinvitecode = StringUtil.valueOf(inviteCodeMap.get("inviteCode"));
+            addInviteCode(rs);//写邀请码表
+        }else {
+            getinvitecode =  StringUtil.valueOf(inviteCodeMap.get("inviteCode"));  //已有邀请码
         }
         CifInviteCodeEntity c = new CifInviteCodeEntity();
         c.setOrgcustomerno(customerno);
@@ -82,19 +109,20 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
         c.setStatus(CommonUtil.NO);
         List<CifInviteCodeEntity> cs = cifInviteCodeEntityMapper
                 .selectByEntity(c);
-        serialno = cs.get(0).getSerialno();
-        issendsms = cs.get(0).getIssendsms();
         //更新企業成員信息表
-        return rs;
+        InviteCodeDomain inviteCodeDomain=new InviteCodeDomain();
+        inviteCodeDomain.setSerialno(cs.get(0).getSerialno());
+        inviteCodeDomain.setInviteCode(getinvitecode);
+        inviteCodeDomain.setIssendSms(cs.get(0).getIssendsms());
+        return rs.success(inviteCodeDomain);
     }
-    private void getParam(HashMap<String, Object> mapParam, Response rs) {
-        invitecode = StringUtils.isEmpty(mapParam.get("invitecode")) ? "" : String.valueOf(mapParam.get("invitecode"));
+    private void getParam(HashMap<String, Object> mapParam) {
         customerno = StringUtils.isEmpty(mapParam.get("customerno")) ? "" : String.valueOf(mapParam.get("customerno"));
         certificateno = StringUtils.isEmpty(mapParam.get("certificateno")) ? "" : String.valueOf(mapParam.get("certificateno"));
         orgcustomerno = StringUtils.isEmpty(mapParam.get("orgcustomerno")) ? "" : String.valueOf(mapParam.get("orgcustomerno"));
     }
     @Override
-    public Response<VerificationCodeDomain> sendInvitecode(HashMap<String, Object> mapParam) {
+    public Response<InviteCodeDomain> sendInvitecode(HashMap<String, Object> mapParam) {
         return null;
     }
     /**
@@ -113,7 +141,7 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
         cifInviteCodeEntity.setOrgcustomerno(orgcustomerno);
         cifInviteCodeEntity.setCertificatetype(certificatetype);
         cifInviteCodeEntity.setCertificateno(certificateno);
-        //cifInviteCodeEntity.setIsmember(isMember);
+        cifInviteCodeEntity.setIsmember(isMember);
         cifInviteCodeEntity.setInvitecode(getinvitecode);
         cifInviteCodeEntity.setStatus(NO);
         cifInviteCodeEntity.setFailuretime(failuretime);
