@@ -14,7 +14,7 @@ public class InviteCodeFacadeImpl implements InviteCodeFacade {
     }
 
     @Override
-    public Response<InviteCodeDomain> sendInvitecode(HashMap<String, Object> mapParam) {
+    public Response sendInvitecode(HashMap<String, Object> mapParam) {
         return null;
     }
 }

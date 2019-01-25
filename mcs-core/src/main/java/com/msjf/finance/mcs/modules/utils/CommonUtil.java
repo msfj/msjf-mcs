@@ -3,6 +3,7 @@ package com.msjf.finance.mcs.modules.utils;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
+import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
 import com.msjf.finance.mcs.modules.sms.dao.AusVerificateCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.CifInviteCodeEntityMapper;
 import com.msjf.finance.mcs.modules.sms.dao.SysParamsConfigEntityMapper;
@@ -155,8 +156,8 @@ public class CommonUtil {
      * @param invitecode
      * @param rs
      */
-    public static void sendInviteCode(String companyName, String mobile, String invitecode, String customerno,
-                                      String smsIp,String certificateno, Response rs) {
+    public static Response<VerificationCodeDomain> sendInviteCode(String companyName, String mobile, String invitecode, String customerno,
+                                                                  String smsIp, String certificateno, Response rs) {
 //        if (CheckUtil.checkNull(companyName, "企业名称", rs)) {
 //            throw new WsRuntimeException(rs.getErrorMessage());
 //        }
@@ -169,25 +170,20 @@ public class CommonUtil {
 //        if (CheckUtil.checkNull(customerno, "客户代码", rs)) {
 //            throw new WsRuntimeException(rs.getErrorMessage());
 //        }
-//        String validtime = getSysConfigValue("invitecode_failure_time", "code_failure_time");
-//        //{name}企业邀请您关注{dot}邀请码{code}在{validtime}内有效{mark}
-//        HashMap<String, Object> mapParam = new HashMap<String, Object>();
-//        mapParam.put("name", companyName);
-//        mapParam.put("dot", "，");
-//        mapParam.put("code", invitecode);
-//        mapParam.put("validtime", validtime + "小时");
-//        mapParam.put("mark", "。");
-//        mapParam.put("templateId", "2031012026748");
-//        mapParam.put("mobile", mobile);
-//        mapParam.put("loginName", CustEntity.getLoginname());
-//        mapParam.put("smsIp", smsIp);
-//        SmsService api = (SmsService) SpringContextUtil.getBean("SmsServiceApi");
-//        IResult irs = new Result();
-//        api.doService(mapParam);
-//        if (!irs.isSuccessful()) {
-//            rs.failed(irs.getErrorMessage());
-//            //throw new WsRuntimeException(rs.getErrorMessage());
-//        }
+        String validtime = getSysConfigValue("invitecode_failure_time", "code_failure_time");
+        //{name}企业邀请您关注{dot}邀请码{code}在{validtime}内有效{mark}
+        HashMap<String, Object> mapParam = new HashMap<String, Object>();
+        mapParam.put("name", companyName);
+        mapParam.put("dot", "，");
+        mapParam.put("code", invitecode);
+        mapParam.put("validtime", validtime + "小时");
+        mapParam.put("mark", "。");
+        mapParam.put("templateId", "2031012026748");
+        mapParam.put("mobile", mobile);
+        mapParam.put("loginName",certificateno);
+        mapParam.put("smsIp", smsIp);
+        SmsService api = (SmsService) SpringContextUtil.getBean("SmsServiceApi");
+        return api.doService(mapParam);
     }
     /**
      * 获取系统参数
@@ -292,6 +288,7 @@ public class CommonUtil {
      * @param mobile          手机号码
      * @param verificate_type 认证类型 3- 手机号码换绑
      * @param delcode         是否删除认证记录
+
      * @return
      */
     public static Response checkMsgCodeMoblieChange(String customerno,String msgcode, String mobile, String verificate_type, Boolean delcode) {

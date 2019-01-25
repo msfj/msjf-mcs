@@ -21,6 +21,6 @@ public interface InviteCodeFacade {
      * @param mapParam
      * @return
      */
-    Response<InviteCodeDomain> sendInvitecode(HashMap<String, Object> mapParam);
+    Response sendInvitecode(HashMap<String, Object> mapParam);
 
 }

@@ -122,8 +122,45 @@ public class InviteCodeServiceImpl extends SmsSend implements InviteCodeService 
         orgcustomerno = StringUtils.isEmpty(mapParam.get("orgcustomerno")) ? "" : String.valueOf(mapParam.get("orgcustomerno"));
     }
     @Override
-    public Response<InviteCodeDomain> sendInvitecode(HashMap<String, Object> mapParam) {
-        return null;
+    public Response sendInvitecode(HashMap<String, Object> mapParam) {
+        Response rs=new Response();
+        return rs;
+//        rs.failed("邀请码生成失败");
+//        getParam(mapParam, rs);
+//        if (CheckUtil.isNull(mobile)) {
+//            rs.failed("手机号码未填写，无法发送");
+//            throw new WsRuntimeException(rs.getErrorMessage());
+//        }
+//        if (CheckUtil.isNull(serialno)) {
+//            rs.failed("流水号不能为空");
+//            throw new WsRuntimeException(rs.getErrorMessage());
+//        }
+//        if (CheckUtil.isNull(invitecode)) {
+//            rs.failed("邀请码不能为空");
+//            throw new WsRuntimeException(rs.getErrorMessage());
+//        }
+//        if (CheckUtil.isNull(issendsms)) {
+//            rs.failed("issendsms不能为空");
+//            throw new WsRuntimeException(rs.getErrorMessage());
+//        }
+//        //前端传1.流水号  2、邀请码  3、是否发送短信
+//        //发送短信验证码给受邀人
+//        CifOrganInfoEntity cifOrganInfoEntity = cifOrganInfoPersistence.queryEntity(orgcustomerno);
+//        if (CheckUtil.isNull(cifOrganInfoEntity)) {
+//            rs.failed("企业基本信息不存在");
+//            return;
+//        }
+//        if (issendsms.equals(NO)) {
+//            CommonUtil.sendInviteCode(cifOrganInfoEntity.getMembername(), mobile, invitecode, customerno, "", rs);
+//            CifInviteCodeEntity cifInviteCodeEntity = new CifInviteCodeEntity();
+//            cifInviteCodeEntity.setSerialno(serialno);
+//            cifInviteCodeEntity.setIssendsms(YES);
+//            PersistenceUtil.getPersistence(CifInviteCodePersistence.class).update(cifInviteCodeEntity);
+//            rs.successful("发送成功");
+//        } else {
+//            rs.failed("邀请码还在有效期内，请勿重复发送！");
+//            return rs;
+//        }
     }
     /**
      * 写邀请码表
