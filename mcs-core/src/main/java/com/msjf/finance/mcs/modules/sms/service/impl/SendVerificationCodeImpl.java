@@ -307,9 +307,9 @@ public class SendVerificationCodeImpl extends Message implements SendVerificatio
             if(ObjectUtils.isEmpty(ausVerificateCodeEntityList)){
                 return rs.fail(SendVerificationCodeEnum.MSGCODE_NOT_EXIST);
             }
-            if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntityList.get(0).getFailuretime()) > 0) {
-                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
-            }
+//            if (DateUtil.getUserDate(DATE_FMT_DATETIME).compareTo(ausVerificateCodeEntityList.get(0).getFailuretime()) > 0) {
+//                return new Response<>().fail(CommonUtilEmun.VALIDE_CODE_OVRE_TIME);
+//            }
         }
         return rs.success(SendVerificationCodeEnum.VERIFICATION_SUCCESS);
     }
