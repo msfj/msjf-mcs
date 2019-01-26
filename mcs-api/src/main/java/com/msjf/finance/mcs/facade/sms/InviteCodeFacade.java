@@ -1,5 +1,6 @@
 package com.msjf.finance.mcs.facade.sms;
 
+import com.msjf.finance.mcs.facade.sms.domain.InviteCodeDomain;
 import com.msjf.finance.mcs.facade.sms.domain.VerificationCodeDomain;
 import com.msjf.finance.msjf.core.response.Response;
 
@@ -12,7 +13,7 @@ public interface InviteCodeFacade {
      * @param mapParam
      * @return
      */
-    Response<VerificationCodeDomain> getInviteCode(HashMap<String, Object> mapParam);
+    Response<InviteCodeDomain> getInviteCode(HashMap<String, Object> mapParam);
 
     /**
      * 邀请认证
@@ -20,6 +21,6 @@ public interface InviteCodeFacade {
      * @param mapParam
      * @return
      */
-    Response<VerificationCodeDomain> sendInvitecode(HashMap<String, Object> mapParam);
+    Response sendInvitecode(HashMap<String, Object> mapParam);
 
 }
